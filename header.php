@@ -34,7 +34,8 @@ if(isset($_SESSION['logged_in']))
 }
 else
 {
-	echo 'Not logged in';
+	//echo 'Not logged in';
+	echo '<a href="#userlogin">User Login</a> | <a href="#playgroundlogin">Playground Login</a>';
 }
 
 ?>

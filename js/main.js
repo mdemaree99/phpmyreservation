@@ -1,4 +1,23 @@
 // Show pages
+function showhomepage()
+{
+	showdashboard();
+}
+
+function showdashboard()
+{
+	if(typeof session_logged_in != 'undefined')
+	{
+		if(typeof session_logged_in_as_playground != 'undefined')
+		{
+			showreservationsatplayground();
+		}
+		else
+		{
+			showreservations();
+		}
+	}
+}
 
 function showabout()
 {
@@ -31,12 +50,44 @@ function showlogin()
 		}
 	});
 }
+function showplaygroundlogin()
+{
+	page_load();
+	div_hide('#content_div');
+
+	$.get('playgroundlogin.php', function(data)
+	{
+		$('#content_div').html(data); 
+		div_fadein('#content_div');
+		page_loaded();
+
+		var user_email = $('#playground_email_input').val();
+		var user_password = $('#playground_password_input').val();
+
+		if(playground_email != '' && user_password != '')
+		{
+			setTimeout(function() { $('#login_form').submit(); }, 250);
+		}
+		else
+		{
+			input_focus('#playground_email_input');
+		}
+	});
+}
 
 function shownew_user()
 {
 	page_load();
 	div_hide('#content_div');
 	$.get('login.php?new_user', function(data) { $('#content_div').html(data); div_fadein('#content_div'); page_loaded(); input_focus('#user_name_input'); });
+	
+}
+
+function shownew_playground()
+{
+	page_load();
+	div_hide('#content_div');
+	$.get('playgroundlogin.php?new_playground', function(data) { $('#content_div').html(data); div_fadein('#content_div'); page_loaded(); input_focus('#playground_name_input'); });
 	
 }
 
@@ -64,6 +115,14 @@ function showreservations()
 			page_loaded();
 		});
 	});
+}
+
+function showreservationsatplayground()
+{
+	page_load();
+	div_hide('#content_div');
+
+	page_loaded();
 }
 
 function showweek(week, option)
@@ -209,7 +268,7 @@ function page_loaded(page)
 	}
 }
 
-// Login
+// User Login
 
 function login()
 {
@@ -253,10 +312,53 @@ function login()
 	});
 }
 
+//Playground login
+function playgroundlogin()
+{
+	var playground_email = $('#playground_email_input').val();
+	var playground_password = $('#playground_password_input').val();
+
+	$('#login_message_p').html('<img src="img/loading.gif" alt="Loading"> Logging in...').slideDown('fast');
+
+	var remember_me_checkbox = $('#remember_me_checkbox').prop('checked');
+
+	if(remember_me_checkbox)
+	{
+		var playground_remember = 1;
+	}
+	else
+	{
+		var playground_remember = 0;
+	}
+
+	$.post('playgroundlogin.php?login', { playground_email: playground_email, playground_password: playground_password, playground_remember: playground_remember }, function(data)
+	{
+		if(data == 1)
+		{
+			input_focus();
+			setTimeout(function() { window.location.replace('.'); }, 1000);
+		}
+		else
+		{
+			if(data == '')
+			{
+				$('#login_message_p').html('<span class="error_span">Wrong email and/or password</span>');
+				$('#playground_email_input').val('');
+				$('#playground_password_input').val('');
+				input_focus('#playground_email_input');
+			}
+			else
+			{
+				$('#login_message_p').html(data);
+			}
+		}
+	});
+}
+
 function logout()
 {
 	notify('Logging out...', 300);
-	$.get('login.php?logout', function(data) { setTimeout(function() { window.location.replace('.'); }, 1000); });
+	$.get('login.php?logout', function(data) { alert(data);setTimeout(function() { window.location.replace('.'); }, 1000); });
 }
 
 function create_user()
@@ -306,6 +408,55 @@ function create_user()
 		});
 	}
 }
+
+function create_playground()
+{
+	var playground_name = $('#playground_name_input').val();
+	var playground_email = $('#playground_email_input').val();
+	var playground_password = $('#playground_password_input').val();
+	var playground_password_confirm = $('#playground_password_confirm_input').val();
+
+	if($('#playground_secret_code_input').length)
+	{
+		var playground_secret_code =  $('#playground_secret_code_input').val();
+	}
+	else
+	{
+		var playground_secret_code = '';
+	}
+
+	if(playground_password != playground_password_confirm)
+	{
+		$('#new_playground_message_p').html('<span class="error_span">Passwords do not match</span>').slideDown('fast');
+		$('#playground_password_input').val('');
+		$('#playground_password_confirm_input').val('');
+		input_focus('#playground_password_input');
+	}
+	else
+	{
+		$('#new_playground_message_p').html('<img src="img/loading.gif" alt="Loading"> Creating playground...').slideDown('fast');
+
+		$.post('playgroundlogin.php?create_playground', { playground_name: playground_name, playground_email: playground_email, playground_password: playground_password, playground_secret_code: playground_secret_code }, function(data)
+		{
+			if(data == 1)
+			{
+				input_focus();
+
+				setTimeout(function()
+				{
+					$('#new_playground_message_p').html('playground created successfully! Logging in... <img src="img/loading.gif" alt="Loading">');
+					setTimeout(function() { window.location.replace('#playgroundlogin'); }, 2000);
+				}, 1000);
+			}
+			else
+			{
+				input_focus();
+				$('#new_playground_message_p').html(data);
+			}
+		});
+	}
+}
+
 
 // Reservation
 
@@ -844,6 +995,8 @@ $(document).ready( function()
 	// Forms
 	$(document).on('submit', '#login_form', function() { login(); return false; });
 	$(document).on('submit', '#new_user_form', function() { create_user(); return false; });
+	$(document).on('submit', '#playground_login_form', function() { playgroundlogin(); return false; });
+	$(document).on('submit', '#new_playground_form', function() { create_playground(); return false; });
 	$(document).on('submit', '#system_configuration_form', function() { save_system_configuration(); return false; });
 	$(document).on('submit', '#user_details_form', function() { change_user_details(); return false; });
 
@@ -876,49 +1029,46 @@ $(document).ready( function()
 function hash()
 {
 	var hash = window.location.hash.slice(1);
-
-	if(hash == '')
+	
+	switch(hash)
 	{
-		if(typeof session_logged_in != 'undefined')
-		{
-			showreservations();
-		}
-		else
-		{
+		case '' :
+			showdashboard();
+			break;
+		case 'dashboard' :
+			showdashboard();
+			break;
+		case 'userlogin' :
 			showlogin();
-		}
-	}
-	else
-	{
-		if(hash == 'about')
-		{
-			showabout();
-		}
-		else if(hash == 'new_user')
-		{
+			break;
+		case 'new_user':
 			shownew_user();
-		}
-		else if(hash == 'forgot_password')
-		{
+			break;
+		case 'forgot_password':
 			showforgot_password();
-		}
-		else if(hash == 'help')
-		{
-			showhelp();
-		}
-		else if(hash == 'cp')
-		{
+			break;
+		case 'playgroundlogin' :
+			showplaygroundlogin();
+			break;
+		case 'new_playground' :
+			shownew_playground();
+			break;
+		case 'cp' :
 			showcp();
-		}
-		else if(hash == 'logout')
-		{
+			break;
+		case 'logout' :
 			logout();
-		}
-		else
-		{
+			break;
+		case 'about':
+			showabout();
+			break;
+		case 'help':
+			showhelp();
+			break;
+		default:
 			window.location.replace('.');
-		}
 	}
+
 }
 
 // Window load

@@ -96,7 +96,7 @@ else
 
 ?>
 
-	<div class="box_div" id="login_div"><div class="box_top_div">Log in</div><div class="box_body_div">
+	<div class="box_div" id="login_div"><div class="box_top_div">User log in</div><div class="box_body_div">
 
 	<form action="." id="login_form" autocomplete="off"><p>
 
