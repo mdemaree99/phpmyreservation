@@ -2,7 +2,7 @@
 
 include_once('main.php');
 
-if(check_user_login() != true) { exit; }
+if(check_login() != true) { exit; }
 
 if($_SESSION['user_is_admin'] == '1' && isset($_GET['list_users']))
 {

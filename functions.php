@@ -1,5 +1,5 @@
 <?php
-
+include_once('playground_functions.php');
 // Configuration
 
 function get_configuration($data)
@@ -144,22 +144,34 @@ function login($user_email, $user_password, $user_remember)
 	}
 }
 
-function check_user_login()
+function check_login()
 {
 	if(isset($_SESSION['logged_in']))
 	{
-		$user_id = $_SESSION['user_id'];
-		$query = mysql_query("SELECT * FROM " . global_mysql_users_table . " WHERE user_id='$user_id'")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
-
-		if(mysql_num_rows($query) == 1)
+		if(isset($_SESSION['logged_in_as_playground']))
 		{
-			return(true);
+			return check_playground_login();
 		}
 		else
 		{
-			logout();
-			echo '<script type="text/javascript">window.location.replace(\'.\');</script>';
+			return check_user_login();
 		}
+	}
+	else
+	{	
+		logout();
+		echo '<script type="text/javascript">window.location.replace(\'.\');</script>';
+	}
+}
+
+function check_user_login()
+{	
+	$user_id = $_SESSION['user_id'];
+	$query = mysql_query("SELECT * FROM " . global_mysql_users_table . " WHERE user_id='$user_id'")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+
+	if(mysql_num_rows($query) == 1)
+	{
+		return(true);
 	}
 	else
 	{

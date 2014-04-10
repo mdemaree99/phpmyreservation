@@ -396,6 +396,15 @@ input#reservation_today_button
 	visibility: hidden;	
 }
 
+textarea
+{
+	width: 200px;
+	padding: 4px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	-webkit-appearance: none;
+}
+
 /* Headlines */
 
 h1

@@ -36,11 +36,11 @@ function playgroundlogin($playground_email, $playground_password, $playground_re
 	{
 			$playground = mysql_fetch_array($query);
 
-			$_SESSION['playground_id'] = $playground['playground_id'];
-			$_SESSION['playground_is_admin'] = $playground['playground_is_admin'];
-			$_SESSION['playground_email'] = $playground['playground_email'];
-			$_SESSION['playground_name'] = $playground['playground_name'];
-			$_SESSION['playground_reservation_reminder'] = $playground['playground_reservation_reminder'];
+			$_SESSION['user_id'] = $playground['playground_id'];
+			$_SESSION['user_is_admin'] = $playground['playground_is_admin'];
+			$_SESSION['user_email'] = $playground['playground_email'];
+			$_SESSION['user_name'] = $playground['playground_name'];
+			$_SESSION['user_reservation_reminder'] = $playground['playground_reservation_reminder'];
 			$_SESSION['logged_in'] = '1';
 			$_SESSION['logged_in_as_playground'] = '1';
 			
@@ -58,20 +58,12 @@ function playgroundlogin($playground_email, $playground_password, $playground_re
 
 function check_playground_login()
 {
-	if(isset($_SESSION['logged_in']))
-	{
-		$playground_id = $_SESSION['playground_id'];
-		$query = mysql_query("SELECT * FROM " . global_mysql_playgrounds_table . " WHERE playground_id='$playground_id'")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+	$playground_id = $_SESSION['user_id'];
+	$query = mysql_query("SELECT * FROM " . global_mysql_playgrounds_table . " WHERE playground_id='$playground_id'")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
 
-		if(mysql_num_rows($query) == 1)
-		{
-			return(true);
-		}
-		else
-		{
-			logout();
-			echo '<script type="text/javascript">window.location.replace(\'.\');</script>';
-		}
+	if(mysql_num_rows($query) == 1)
+	{
+		return(true);
 	}
 	else
 	{
@@ -133,9 +125,21 @@ function create_playground($playground_name, $playground_email, $playground_pass
 	}
 }
 
-function list_admin_playgrounds()
+function list_venues()
 {
-	$query = mysql_query("SELECT * FROM " . global_mysql_playgrounds_table . " WHERE playground_is_admin='1' ORDER BY playground_name")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+$query = mysql_query("SELECT * FROM " . global_mysql_users_table . " ORDER BY user_is_admin DESC, user_name")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+
+	$users = '<table id="users_table"><tr><th>Venue Name</th><th>Venue sports type</th><th>Venue time slots</th><th>Rate per time slot</th><th>Venue Location</th><th>Usage</th><th>Contact Number</th><th></th></tr>';
+
+	while($user = mysql_fetch_array($query))
+	{
+		$users .= '<tr id="user_tr_' . $user['user_id'] . '"><td><label for="user_radio_' . $user['user_id'] . '">' . $user['user_id'] . '</label></td><td>' . $user['user_is_admin'] . '</td><td><label for="user_radio_' . $user['user_id'] . '">' . $user['user_name'] . '</label></td><td><label for="user_radio_' . $user['user_id'] . '">' . $user['user_email'] . '</label></td><td>' . $user['user_reservation_reminder'] . '</td><td>' . count_reservations($user['user_id']) . '</td><td>' . cost_reservations($user['user_id']) . ' ' . global_currency . '</td><td><input type="radio" name="user_radio" class="user_radio" id="user_radio_' . $user['user_id'] . '" value="' . $user['user_id'] . '"></td></tr>';
+	}
+
+	$users .= '</table>';
+
+	return($users);
+	/*$query = mysql_query("SELECT * FROM " . global_mysql_playgrounds_table . " WHERE playground_is_admin='1' ORDER BY playground_name")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
 
 	if(mysql_num_rows($query) < 1)
 	{
@@ -157,7 +161,7 @@ function list_admin_playgrounds()
 		$return .= '</table>';
 
 		return($return);
-	}
+	}*/
 }
 
 ?>

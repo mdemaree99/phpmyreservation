@@ -10,7 +10,7 @@ function showdashboard()
 	{
 		if(typeof session_logged_in_as_playground != 'undefined')
 		{
-			showreservationsatplayground();
+			showplaygroundlandingpage();
 		}
 		else
 		{
@@ -117,12 +117,17 @@ function showreservations()
 	});
 }
 
-function showreservationsatplayground()
+function showplaygroundlandingpage()
 {
 	page_load();
 	div_hide('#content_div');
 
-	page_loaded();
+	$.get('playgroundlandingpage.php', function(data)
+	{
+		$('#content_div').html(data);
+		div_fadein('#content_div');
+		page_loaded();
+	});
 }
 
 function showweek(week, option)
@@ -1033,7 +1038,7 @@ function hash()
 	switch(hash)
 	{
 		case '' :
-			showdashboard();
+			showhomepage();
 			break;
 		case 'dashboard' :
 			showdashboard();
@@ -1046,6 +1051,9 @@ function hash()
 			break;
 		case 'forgot_password':
 			showforgot_password();
+			break;
+		case 'playgroundlanding' :
+			showplaygroundlandingpage();
 			break;
 		case 'playgroundlogin' :
 			showplaygroundlogin();
