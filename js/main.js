@@ -358,7 +358,7 @@ function playgroundlogin()
 function logout()
 {
 	notify('Logging out...', 300);
-	$.get('login.php?logout', function(data) { alert(data);setTimeout(function() { window.location.replace('.'); }, 1000); });
+	$.get('login.php?logout', function(data) { setTimeout(function() { window.location.replace('.'); }, 1000); });
 }
 
 function create_user()
