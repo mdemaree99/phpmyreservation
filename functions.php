@@ -116,6 +116,8 @@ function get_login_data($data)
 
 function login($user_email, $user_password, $user_remember)
 {
+	logout();
+	
 	$user_password_encrypted = encrypt_password($user_password);
 	$user_password = add_salt($user_password);
 	
@@ -166,6 +168,10 @@ function check_login()
 
 function check_user_login()
 {	
+	if(!isset($_SESSION['logged_in']) || isset($_SESSION['logged_in_as_playground']))
+	{
+		return false;
+	}
 	$user_id = $_SESSION['user_id'];
 	$query = mysql_query("SELECT * FROM " . global_mysql_users_table . " WHERE user_id='$user_id'")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
 

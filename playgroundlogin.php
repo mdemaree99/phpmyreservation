@@ -2,6 +2,9 @@
 
 include_once('main.php');
 
+//If logged in as user , don't allow
+if(check_user_login() == true) { exit; }
+
 if(isset($_GET['login']))
 {
 	$playground_email = mysql_real_escape_string($_POST['playground_email']);

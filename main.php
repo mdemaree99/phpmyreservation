@@ -22,6 +22,7 @@ define('global_mysql_configuration_table', 'phpmyreservation_configuration');
 define('global_mysql_users_table', 'phpmyreservation_users');
 define('global_mysql_playgrounds_table', 'phpmyreservation_playgrounds');
 define('global_mysql_reservations_table', 'phpmyreservation_reservations');
+define('global_mysql_venues_table', 'phpmyreservation_venues');
 
 // Cookies
 

@@ -27,6 +27,8 @@ function get_playground_login_data($data)
 
 function playgroundlogin($playground_email, $playground_password, $playground_remember)
 {
+	logout();
+	
 	$playground_password_encrypted = encrypt_password($playground_password);
 	$playground_password = add_salt($playground_password);
 	
@@ -58,6 +60,10 @@ function playgroundlogin($playground_email, $playground_password, $playground_re
 
 function check_playground_login()
 {
+	if( !isset($_SESSION['logged_in_as_playground']) )
+	{
+		return false;
+	}
 	$playground_id = $_SESSION['user_id'];
 	$query = mysql_query("SELECT * FROM " . global_mysql_playgrounds_table . " WHERE playground_id='$playground_id'")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
 
@@ -125,43 +131,70 @@ function create_playground($playground_name, $playground_email, $playground_pass
 	}
 }
 
-function list_venues()
+//Venue functions
+
+function create_or_update_venue($venue_name, $venue_sports_type, $venue_time_slots, $rate_per_time_slot, $venue_location, $venue_contact_number, $venue_id='')
 {
-$query = mysql_query("SELECT * FROM " . global_mysql_users_table . " ORDER BY user_is_admin DESC, user_name")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
-
-	$users = '<table id="users_table"><tr><th>Venue Name</th><th>Venue sports type</th><th>Venue time slots</th><th>Rate per time slot</th><th>Venue Location</th><th>Usage</th><th>Contact Number</th><th></th></tr>';
-
-	while($user = mysql_fetch_array($query))
+	$playground_id = $_SESSION['user_id'];
+	
+	if($venue_id == '')
 	{
-		$users .= '<tr id="user_tr_' . $user['user_id'] . '"><td><label for="user_radio_' . $user['user_id'] . '">' . $user['user_id'] . '</label></td><td>' . $user['user_is_admin'] . '</td><td><label for="user_radio_' . $user['user_id'] . '">' . $user['user_name'] . '</label></td><td><label for="user_radio_' . $user['user_id'] . '">' . $user['user_email'] . '</label></td><td>' . $user['user_reservation_reminder'] . '</td><td>' . count_reservations($user['user_id']) . '</td><td>' . cost_reservations($user['user_id']) . ' ' . global_currency . '</td><td><input type="radio" name="user_radio" class="user_radio" id="user_radio_' . $user['user_id'] . '" value="' . $user['user_id'] . '"></td></tr>';
-	}
-
-	$users .= '</table>';
-
-	return($users);
-	/*$query = mysql_query("SELECT * FROM " . global_mysql_playgrounds_table . " WHERE playground_is_admin='1' ORDER BY playground_name")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
-
-	if(mysql_num_rows($query) < 1)
-	{
-		return('<span class="error_span">There are no admins</span>');
+	mysql_query("INSERT INTO " . global_mysql_venues_table . " (name,sports_type,time_slots,rate,location,contact_number,playground_id ) VALUES ('$venue_name', '$venue_sports_type', '$venue_time_slots', '$rate_per_time_slot', '$venue_location', '$venue_contact_number', '$playground_id')")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
 	}
 	else
 	{
-		$return = '<table id="forgot_password_table"><tr><th>Name</th><th>Email</th></tr>';
-
-		$i = 0;
-
-		while($playground = mysql_fetch_array($query))
-		{
-			$i++;
-
-			$return .= '<tr><td>' . $playground['playground_name'] . '</td><td><span id="email_span_' . $i . '"></span></td></tr><script type="text/javascript">$(\'#email_span_' . $i . '\').html(\'<a href="mailto:\'+$.base64.decode(\'' . base64_encode($playground['playground_email']) . '\')+\'">\'+$.base64.decode(\'' . base64_encode($playground['playground_email']) . '\')+\'</a>\');</script>';
-		}
-
-		$return .= '</table>';
-
-		return($return);
-	}*/
+	//Update
+	}
+	return 1;
 }
+
+function delete_venue_data($venue_id , $data)
+{
+	$playground_id = $_SESSION['user_id'];
+	
+	//Check if venue , belongs to logged in playground
+	$query = mysql_query("SELECT * FROM " . global_mysql_venues_table . " WHERE id = $venue_id AND playground_id = $playground_id")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+
+	if(mysql_num_rows($query) < 1)
+	{
+		return('<span class="error_span">You have not added any venues. Add one below.</span>');
+	}
+
+	mysql_query("DELETE from " . global_mysql_venues_table . " WHERE id = $venue_id")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+
+	return(1);
+}
+
+function list_venues()
+{
+$playground_id = $_SESSION['user_id'];
+
+$query = mysql_query("SELECT * FROM " . global_mysql_venues_table . " WHERE playground_id = $playground_id")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+
+	if(mysql_num_rows($query) < 1)
+	{
+		return('<span class="error_span">You have not added any venues. Add one below.</span>');
+	}
+	
+	$venues = '<table id="venues_table"><tr><th>Venue Name</th><th>Venue sports type</th><th>Venue time slots</th><th>Rate</th><th>Venue Location</th><th>Contact Number</th><th></th></tr>';
+
+	while($venue = mysql_fetch_array($query))
+	{
+		$venues .= '<tr id="venue_tr_' . $venue['id'] .'"><td>';
+		$venues .= '<label for="venue_radio_' . $venue['name'] . '">' . $venue['name'] .'</label></td><td>';
+		$venues .= '<label for="venue_radio_' . $venue['sports_type'] . '">' . $venue['sports_type'] .'</label></td><td>';
+		$venues .= '<label for="venue_radio_' . $venue['time_slots'] . '">' . $venue['time_slots'] .'</label></td><td>';
+		$venues .= '<label for="venue_radio_' . $venue['rate'] . '">' . $venue['rate'] . '</label></td><td>';
+		$venues .= '<label for="venue_radio_' . $venue['location'] . '">' . $venue['location'] .'</label></td><td>';
+		$venues .= '<label for="venue_radio_' . $venue['contact_number'] . '">' . $venue['contact_number'] .'</label></td><td>';
+		$venues .= '<input type="radio" name="venue_radio" class="venue_radio" id="venue_radio_' . $venue['id'] . '" value="' . $venue['id'] . '">';
+		$venues .= '</td></tr>';
+	}
+
+	$venues .= '</table>';
+
+	return($venues);
+}
+
 
 ?>

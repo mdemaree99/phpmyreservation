@@ -61,12 +61,12 @@ function showplaygroundlogin()
 		div_fadein('#content_div');
 		page_loaded();
 
-		var user_email = $('#playground_email_input').val();
-		var user_password = $('#playground_password_input').val();
+		var playground_email = $('#playground_email_input').val();
+		var playground_password = $('#playground_password_input').val();
 
-		if(playground_email != '' && user_password != '')
+		if(playground_email != '' && playground_password != '')
 		{
-			setTimeout(function() { $('#login_form').submit(); }, 250);
+			setTimeout(function() { $('#playground_login_form').submit(); }, 250);
 		}
 		else
 		{
@@ -462,6 +462,41 @@ function create_playground()
 	}
 }
 
+function create_venue()
+{
+	var venue_id = '';
+	if($('#venue_id_input').length)
+	{
+		venue_id = $('#venue_id_input').val();
+	}
+	var venue_name = $('#venue_name_input').val();
+	var venue_sports_type = $('#venue_sports_type_input').val();
+	var venue_time = $('#venue_time_input').val();
+	var venue_rate = $('#venue_rate_input').val();
+	var venue_location = $('#venue_location_input').val();
+	var venue_contact_number = $('#venue_contact_number_input').val();
+	
+	$('#new_venue_message_p').html('<img src="img/loading.gif" alt="Loading"> Creating Venue...').slideDown('fast');
+
+	$.post('playgroundlandingpage.php?create_venue', { venue_name: venue_name, venue_sports_type: venue_sports_type, venue_time_slots: venue_time, rate_per_time_slot: venue_rate, venue_location: venue_location, venue_contact_number: venue_contact_number }, function(data)
+	{
+		if(data == 1)
+		{
+			input_focus();
+
+			setTimeout(function()
+			{
+				$('#new_venue_message_p').html('venue created successfully!');
+				location.reload();
+			}, 1000);
+		}
+		else
+		{
+			input_focus();
+			$('#new_venue_message_p').html(data);
+		}
+	});
+}
 
 // Reservation
 
@@ -896,6 +931,40 @@ function change_user_details()
 	}
 }
 
+// Venue
+
+function delete_venue_data(delete_data)
+{
+	if(typeof $(".venue_radio:checked").val() !='undefined')
+	{
+		var delete_confirm = confirm('Are you sure?');
+
+		if(delete_confirm)
+		{
+			var venue_id = $(".venue_radio:checked").val();
+
+			$('#venue_administration_message_p').html('<img src="img/loading.gif" alt="Loading"> Deleting...').slideDown('fast');
+
+			$.post('playgroundlandingpage.php?delete_venue_data', { venue_id: venue_id, delete_data: delete_data }, function(data)
+			{
+				if(data == 1)
+				{
+					location.reload();
+				}
+				else
+				{
+					$('#venue_administration_message_p').html(data);
+				}
+			});
+		}
+	}
+	else
+	{
+		$('#venue_administration_message_p').html('<span class="error_span">You must pick a venue</span>').slideDown('fast');
+	}
+}
+
+
 // UI
 
 function div_fadein(id)
@@ -989,6 +1058,7 @@ $(document).ready( function()
 	$(document).on('click', '#change_user_permissions_button', function() { change_user_permissions(); });
 	$(document).on('click', '#delete_user_reservations_button', function() { delete_user_data('reservations'); });
 	$(document).on('click', '#delete_user_button', function() { delete_user_data('user'); });
+	$(document).on('click', '#delete_venue_button', function() { delete_venue_data('venue'); });
 	$(document).on('click', '#delete_all_reservations_button', function() { delete_all('reservations'); });
 	$(document).on('click', '#delete_all_users_button', function() { delete_all('users'); });
 	$(document).on('click', '#delete_everything_button', function() { delete_all('everything'); });
@@ -1004,6 +1074,7 @@ $(document).ready( function()
 	$(document).on('submit', '#new_playground_form', function() { create_playground(); return false; });
 	$(document).on('submit', '#system_configuration_form', function() { save_system_configuration(); return false; });
 	$(document).on('submit', '#user_details_form', function() { change_user_details(); return false; });
+	$(document).on('submit', '#new_venue_form', function() { create_venue(); return false; });
 
 	// Links
 	$(document).on('click mouseover', '#user_secret_code_a', function() { div_fadein('#user_secret_code_div'); return false; });
