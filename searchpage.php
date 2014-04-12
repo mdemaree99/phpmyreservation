@@ -18,7 +18,7 @@ else
 {
 ?>
 
-<h1 class="search blue" >Which game are you gonna play?</h1>
+<h1 class="search blue" >Which game are you going to play?</h1>
 <h2 class="search blue" >Search a play area near you</h2>
 
 <div class="box_div centred_div" id="search_div">
@@ -26,6 +26,10 @@ else
 <form action="." id="new_user_form"><p>
 
 <table>
+<tr>
+	<td>Game type, ex: badminton</td>
+	<td>Location:</td>
+</tr>
 <tr>
 	<td><input type="text" id="game_type_input" class="large_text" placeholder="Game type, ex: badminton"></td>
 	<td><input type="text" id="location_input" class="large_text" placeholder="Location" autocapitalize="off"></td>
@@ -38,7 +42,7 @@ else
 
 
 <div id="search_box_results_div">
-	<?php echo list_venues_by_sports_location('badminton' , 'bellandur'); ?>
+	<?php //echo list_venues_by_sports_location('badminton' , 'bellandur'); ?>
 </div> 
 
 </div>

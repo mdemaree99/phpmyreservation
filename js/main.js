@@ -292,7 +292,7 @@ function page_loaded(page)
 		}
 	}, 1000);
 
-	read_reservation_details();
+	//read_reservation_details();
 
 	// Individual
 	if(page == 'about')
