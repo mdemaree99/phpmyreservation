@@ -2,7 +2,7 @@
 
 <div id="header_inner_div"><div id="header_inner_left_div">
 
-<a href="#about">About</a>
+<a href=".">Home</a> | <a href="#about">About</a>
 
 <?php
 
@@ -15,13 +15,15 @@ if(isset($_SESSION['logged_in']))
 
 </div><div id="header_inner_center_div">
 
-<?php
+<input type="text" id="game_type_input" class="large_text" placeholder="Search a venue here"><input type="submit" value="Search"></td>
 
+<?php
+/*
 if(isset($_SESSION['logged_in']))
 {
 	echo '<b>Week ' . global_week_number . ' - ' . global_day_name . ' ' . date('jS F Y') . '</b>';
 }
-
+*/
 ?>
 
 </div><div id="header_inner_right_div">
@@ -30,7 +32,7 @@ if(isset($_SESSION['logged_in']))
 
 if(isset($_SESSION['logged_in']))
 {
-	echo '<a href="#cp">Control panel</a> | <a href="#logout">Log out</a>';
+	echo '<a href="#dashboard">Dashboard</a> | <a href="#cp">Control panel</a> | <a href="#logout">Logout</a>';
 }
 else
 {

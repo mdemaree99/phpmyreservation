@@ -6,39 +6,40 @@ if(check_login() != true) { exit; }
 
 if(isset($_GET['make_reservation']))
 {
-	//$venue_id = $time = mysql_real_escape_string($_POST['venue_id']);
+	$venue_id = mysql_real_escape_string($_POST['venue_id']);
 	$week = mysql_real_escape_string($_POST['week']);
 	$day = mysql_real_escape_string($_POST['day']);
 	$time = mysql_real_escape_string($_POST['time']);
-	echo make_reservation(0, $week, $day, $time);
+	echo make_reservation($venue_id, $week, $day, $time);
 }
 elseif(isset($_GET['delete_reservation']))
 {
-	//$venue_id = $time = mysql_real_escape_string($_POST['venue_id']);
+	$venue_id = mysql_real_escape_string($_POST['venue_id']);
 	$week = mysql_real_escape_string($_POST['week']);
 	$day = mysql_real_escape_string($_POST['day']);
 	$time = mysql_real_escape_string($_POST['time']);
-	echo delete_reservation(0,$week, $day, $time);
+	echo delete_reservation($venue_id, $week, $day, $time);
 }
 elseif(isset($_GET['read_reservation']))
 {
-	//$venue_id = $time = mysql_real_escape_string($_POST['venue_id']);
+	$venue_id = mysql_real_escape_string($_POST['venue_id']);
 	$week = mysql_real_escape_string($_POST['week']);
 	$day = mysql_real_escape_string($_POST['day']);
 	$time = mysql_real_escape_string($_POST['time']);
-	echo read_reservation(0,$week, $day, $time);
+	echo read_reservation($venue_id,$week, $day, $time);
 }
 elseif(isset($_GET['read_reservation_details']))
 {
-	//$venue_id = $time = mysql_real_escape_string($_POST['venue_id']);
+	$venue_id = mysql_real_escape_string($_POST['venue_id']);
 	$week = mysql_real_escape_string($_POST['week']);
 	$day = mysql_real_escape_string($_POST['day']);
 	$time = mysql_real_escape_string($_POST['time']);
-	echo read_reservation_details(0,$week, $day, $time);
+	echo read_reservation_details($venue_id, $week, $day, $time);
 }
 elseif(isset($_GET['week']))
 {
 	$week = $_GET['week'];
+	$venue_id = $_GET['venue_id'];
 
 	echo '<table id="reservation_table"><colgroup span="1" id="reservation_time_colgroup"></colgroup><colgroup span="7" id="reservation_day_colgroup"></colgroup>';
 
@@ -88,7 +89,7 @@ elseif(isset($_GET['week']))
 		{
 			$i++;
 
-			echo '<td><div class="reservation_time_div"><div class="reservation_time_cell_div" id="div:' . $week . ':' . $i . ':' . $time . '" onclick="void(0)">' . read_reservation(0,$week, $i, $time) . '</div></div></td>';
+			echo '<td><div class="reservation_time_div"><div class="reservation_time_cell_div" id="div:' . $week . ':' . $i . ':' . $time . '" onclick="void(0)">' . read_reservation($venue_id,$week, $i, $time) . '</div></div></td>';
 		}
 
 		echo '</tr>';

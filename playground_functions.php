@@ -165,9 +165,12 @@ function delete_venue_data($venue_id , $data)
 	return(1);
 }
 
-function list_venues()
+function list_venues($playground_id = '')
 {
-$playground_id = $_SESSION['user_id'];
+	if($playground_id == '')
+	{
+		$playground_id = $_SESSION['user_id'];
+	}
 
 $query = mysql_query("SELECT * FROM " . global_mysql_venues_table . " WHERE playground_id = $playground_id")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
 
@@ -196,5 +199,71 @@ $query = mysql_query("SELECT * FROM " . global_mysql_venues_table . " WHERE play
 	return($venues);
 }
 
+function list_playgrounds_and_venues_by_name($name)
+{
+	$query_statement = "SELECT * from ".global_mysql_playgrounds_table . " WHERE playground_name LIKE '%$name%'";
+	
+	$result = mysql_query($query_statement)or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+	
+	if(mysql_num_rows($result) < 1)
+	{
+		return('<span class="error_span">No results obtained please modify your search query</span>');
+	}
+	
+	while($playground = mysql_fetch_array($result))
+	{
+		echo $playground['playground_name'];
+		echo list_venues($playground['playground_id']);
+	}
 
+}
+
+function list_venues_by_sports_location( $sports_type , $location)
+{
+	$query_statement = "SELECT *  FROM " . global_mysql_playgrounds_table . " as playground ," . global_mysql_venues_table . " as venue ";
+	$query_statement .= " WHERE venue.`sports_type` LIKE '%$sports_type%' AND venue.`location` LIKE '%$location%' AND venue.playground_id = playground.playground_id";
+	
+	$result = mysql_query($query_statement)or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+
+	if(mysql_num_rows($result) < 1)
+	{
+		return('<span class="error_span">No results obtained please modify your search query</span>');
+	}
+	
+	$venues = '<table id="venues_table"><tr><th>Venue Name</th><th>Venue sports type</th><th>Venue time slots</th><th>Rate</th><th>Venue Location</th><th>Contact Number</th><th></th></tr>';
+	
+	while($venue = mysql_fetch_array($result))
+	{
+		$venues .= '<tr id="venue_tr_' . $venue['id'] .'"><td>';
+		$venues .= '<label for="venue_radio_' . $venue['name'] . '">' . $venue['name'] .'</label></td><td>';
+		$venues .= '<label for="venue_radio_' . $venue['sports_type'] . '">' . $venue['sports_type'] .'</label></td><td>';
+		$venues .= '<label for="venue_radio_' . $venue['time_slots'] . '">' . $venue['time_slots'] .'</label></td><td>';
+		$venues .= '<label for="venue_radio_' . $venue['rate'] . '">' . $venue['rate'] . '</label></td><td>';
+		$venues .= '<label for="venue_radio_' . $venue['location'] . '">' . $venue['location'] .'</label></td><td>';
+		$venues .= '<label for="venue_radio_' . $venue['contact_number'] . '">' . $venue['contact_number'] .'</label></td><td>';
+		$venues .= '<input type="radio" name="venue_radio" class="venue_radio" id="venue_radio_' . $venue['id'] . '" value="' . $venue['id'] . '">';
+		$venues .= '</td></tr>';
+	}
+	
+	return($venues);
+}
+
+function list_venue_by_id($id)
+{
+	$query_statement = "SELECT * from " .global_mysql_venues_table. " WHERE id = $id";
+	
+	$result = mysql_query($query_statement)or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+	
+	if(mysql_num_rows($result) < 1)
+	{
+		return('<span class="error_span">No results obtained please modify your search query</span>');
+	}
+	
+	$venue = mysql_fetch_array($result);
+	
+	$output = "<input  id = 'input_hidden_venue_id' value=\"$venue[id]\">";
+	$output .= "<a href='' id='venue_check_reservation'>$venue[name]</a>";
+	
+	return $output;
+}
 ?>
