@@ -1,7 +1,19 @@
 // Show pages
 function showhomepage()
 {
-	showdashboard();
+	showsearchpage();
+}
+
+function showsearchpage()
+{
+	page_load();
+	div_hide('#content_div');
+	$.get('searchpage.php', function(data) 
+	{ 
+		$('#content_div').html(data); 
+		div_fadein('#content_div'); 
+		page_loaded(); 
+	}); 
 }
 
 function showdashboard()
@@ -1111,6 +1123,9 @@ function hash()
 		case '' :
 			showhomepage();
 			break;
+		case 'search' :
+			showsearchpage();
+			break;
 		case 'dashboard' :
 			showdashboard();
 			break;
@@ -1173,11 +1188,20 @@ $(window).load(function()
 			hash();
 		});
 	}
+	
+	var images = new Array();
+	images[0] = "img/3522242574_93e1c43174.jpg";
+	images[1] = "img/Soccer_match_-_Rochester_vs_Carolina.JPG";
+	images[2] = "img/Badminton_Semifinal_Pan_2007.jpg";
+	
+	var i = (Math.floor(Math.random()*10))%3;		
+	$.backstretch([images[i]]);
+
 });
 
 // Settings
 
 $(document).ready( function()
 {
-	$.ajaxSetup({ cache: false });
+	$.ajaxSetup({ cache: true });
 });

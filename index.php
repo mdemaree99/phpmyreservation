@@ -15,6 +15,7 @@
 <script src="js/jquery-base64.js" type="text/javascript"></script>
 <?php include('js/header-js.php'); ?>
 <script src="js/main.js" type="text/javascript"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js" ></script>
 
 <link href="css/style.css" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="img/favicon.ico">
@@ -29,8 +30,8 @@
 
 <div id="header_div"><?php include('header.php'); ?></div>
 
-<h1><?php echo global_title; ?></h1>
-<h2><?php echo global_organization; ?></h2>
+<h1><?php //echo global_title; ?></h1>
+<h2><?php //echo global_organization; ?></h2>
 
 <div id="content_div"></div>
 
