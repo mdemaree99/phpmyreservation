@@ -32,7 +32,6 @@ else if(isset($_GET['delete_venue_data']))
 	$data = $_POST['delete_data'];
 	echo delete_venue_data($venue_id , $data);
 }
-
 else{
 ?>
 <div class="box_div" id="login_div"><div class="box_top_div"><a href="#">Start</a> &gt; Your venues</div><div class="box_body_div">
@@ -73,7 +72,7 @@ else{
 	<ul>
 	<li>Venue name is the court name , example : "Badminton court 1"</li>
 	<li>Venue sports type example : badminton , tennis , cricket , football etc</li>
-	<li>Enter all the time slots seperated by semicolon(;) , example:-<br/> 9AM-10AM;10AM-11AM;11AM-12PM;12AM-1PM;1AM-2PM <br/>or <br/> 10AM to 12PM;2PM to 4PM;6PM to 8PM <br/> etc</li>
+	<li>Enter all the time slots seperated by semicolon(;) , example:-<br/> 9AM-10AM;10AM-11AM;11AM-12PM;12PM-1PM;1PM-2PM <br/>or <br/> 10AM to 12PM;2PM to 4PM;6PM to 8PM <br/> etc</li>
 	</ul>
 
 	</div></div>

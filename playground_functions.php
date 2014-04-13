@@ -266,4 +266,20 @@ function list_venue_by_id($id)
 	
 	return $output;
 }
+
+function get_venue_attribute($attribute , $venue_id)
+{
+	$query_statement = "SELECT $attribute from " .global_mysql_venues_table. " WHERE id = $venue_id";
+	
+	$result = mysql_query($query_statement)or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+	
+	if(mysql_num_rows($result) < 1)
+	{
+		return('<span class="error_span">No results obtained please modify your search query</span>');
+	}
+	
+	$venue = mysql_fetch_array($result);
+	
+	return $venue[$attribute];
+}
 ?>

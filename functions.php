@@ -312,13 +312,27 @@ function make_reservation($venue_id, $week, $day, $time)
 	$user_id = $_SESSION['user_id'];
 	$user_email = $_SESSION['user_email'];
 	$user_name = $_SESSION['user_name'];
-	$price = global_price;
-
+	//Get price from the venue details
+	$price = get_venue_attribute('rate',$venue_id);
+	
+	//Check if time it is allowed at the venue
+	$time_slots = get_venue_attribute('time_slots',$venue_id);
+	$pos = strpos($time_slots, $time);
+	
+	if($pos === false)
+	{
+		return('This time slot is not available at the venue');
+	}
+	
 	if($week == '0' && $day == '0' && $time == '0')
 	{
+		//Currently not allowing this
+		return('You can\'t register a booking like this');
+		/*
 		mysql_query("INSERT INTO " . global_mysql_reservations_table . " (reservation_venue_id,reservation_made_time,reservation_week,reservation_day,reservation_time,reservation_price,reservation_user_id,reservation_user_email,reservation_user_name) VALUES ('$venue_id',now(),'$week','$day','$time','$price','$user_id','$user_email','$user_name')")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
 
 		return(1);
+		*/
 	}
 	elseif($week < global_week_number && $_SESSION['user_is_admin'] != '1' || $week == global_week_number && $day < global_day_number && $_SESSION['user_is_admin'] != '1')
 	{
