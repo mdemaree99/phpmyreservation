@@ -142,8 +142,8 @@ function showreservations()
 function searchvenue()
 {
 	page_load();
-	var game_type = document.getElementById('game_type_input').value;
-	var location = document.getElementById('location_input').value;
+	var game_type = $('#game_type_input').val();
+	var location = $('#location_input').val();
 	$.get('searchpage.php?search' , {sports_type : game_type, location : location} , 
 	function(data) {
 			$('#search_results').html("<hr/>");

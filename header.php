@@ -15,7 +15,7 @@ if(isset($_SESSION['logged_in']))
 
 </div><div id="header_inner_center_div">
 
-<input type="text" id="game_type_input" class="large_text" placeholder="Search a venue here"><input type="submit" value="Search"></td>
+<input type="text" id="search_venue_input" class="large_text" placeholder="Search a venue here"><input type="submit" value="Search"></td>
 
 <?php
 /*
