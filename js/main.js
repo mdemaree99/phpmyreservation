@@ -151,11 +151,11 @@ function searchvenue()
 		});
 }
 
-function showvenue()
+function showvenue(id)
 {
 	page_load();
 	div_hide('#content_div');
-	$.get('venue.php',{id:11} , function(data) { $('#content_div').html(data); div_fadein('#content_div'); page_loaded(); });
+	$.get('venue.php',{id : id} , function(data) { $('#content_div').html(data); div_fadein('#content_div'); page_loaded(); });
 }
 
 function showplaygroundlandingpage()
@@ -1198,6 +1198,13 @@ $(document).ready( function()
 function hash()
 {
 	var hash = window.location.hash.slice(1);
+	var query = window.location.search.slice(1);
+	
+	if(hash=='' && query != '')
+	{
+		handlequery(query);
+		return;
+	}
 	
 	switch(hash)
 	{
@@ -1246,7 +1253,22 @@ function hash()
 		default:
 			window.location.replace('.');
 	}
+}
 
+function handlequery(query)
+{
+	query_arr = query.split("="); 
+	query_string = query_arr[0];
+	query_id = query_arr[1];
+	
+	switch(query_string)
+	{
+		case 'venue' :
+			showvenue(query_id);
+			break;
+		default:
+			window.location.replace('.');
+	}
 }
 
 // Window load
@@ -1266,7 +1288,7 @@ $(window).load(function()
 		$.cookie(global_cookie_prefix+'_cookies_test', null);
 
 		hash();
-
+		
 		$(window).bind('hashchange', function ()
 		{
 			hash();
