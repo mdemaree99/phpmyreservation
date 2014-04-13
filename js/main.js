@@ -139,6 +139,18 @@ function showreservations()
 	});
 }
 
+function searchvenue()
+{
+	page_load();
+	var game_type = document.getElementById('game_type_input').value;
+	var location = document.getElementById('location_input').value;
+	$.get('searchpage.php?search' , {sports_type : game_type, location : location} , 
+	function(data) {
+			$('#search_results').html("<hr/>");
+			$('#search_results').append(data);
+		});
+}
+
 function showvenue()
 {
 	page_load();
@@ -1154,6 +1166,7 @@ $(document).ready( function()
 	$(document).on('submit', '#system_configuration_form', function() { save_system_configuration(); return false; });
 	$(document).on('submit', '#user_details_form', function() { change_user_details(); return false; });
 	$(document).on('submit', '#new_venue_form', function() { create_venue(); return false; });
+	$(document).on('submit', '#game_search_form', function() { searchvenue(); return false; });
 
 	// Links
 	$(document).on('click mouseover', '#user_secret_code_a', function() { div_fadein('#user_secret_code_div'); return false; });

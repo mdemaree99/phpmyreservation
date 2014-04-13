@@ -15,6 +15,7 @@
 <script src="js/jquery-base64.js" type="text/javascript"></script>
 <?php include('js/header-js.php'); ?>
 <script src="js/main.js" type="text/javascript"></script>
+<script src="js/backstretch.js" type="text/javascript"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js" ></script>
 
 <link href="css/style.css" rel="stylesheet" type="text/css">

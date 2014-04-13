@@ -9,8 +9,8 @@ if(isset($_GET['search_venue']))
 }
 else if(isset($_GET['search']))
 {
-	$sports_type = mysql_real_escape_string(trim($_GET['sports_type']));
-	$location = mysql_real_escape_string(trim($_GET['location']));
+	$sports_type = isset($_GET['sports_type']) ? mysql_real_escape_string(trim($_GET['sports_type'])) : '';
+	$location = isset($_GET['location']) ? mysql_real_escape_string(trim($_GET['location'])) : '';
 	
 	echo list_venues_by_sports_location($sports_type , $location);
 }
@@ -23,7 +23,7 @@ else
 
 <div class="box_div centred_div" id="search_div">
 <div class="search_box_body_div">
-<form action="." id="new_user_form"><p>
+<form action="." id="game_search_form"><p>
 
 <table>
 <tr>
@@ -38,13 +38,9 @@ else
 </table>
 
 </form>
-
-
-
-<div id="search_box_results_div">
-	<?php //echo list_venues_by_sports_location('badminton' , 'bellandur'); ?>
-</div> 
-
+	
+	<div id="search_results"></div>
+	
 </div>
 </div>
 

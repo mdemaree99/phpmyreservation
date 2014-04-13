@@ -220,6 +220,11 @@ function list_playgrounds_and_venues_by_name($name)
 
 function list_venues_by_sports_location( $sports_type , $location)
 {
+	if($sports_type == '' || $location == '' )
+	{
+		return('<span class="error_span">Empty Search not allowed</span>');
+	}
+	
 	$query_statement = "SELECT *  FROM " . global_mysql_playgrounds_table . " as playground ," . global_mysql_venues_table . " as venue ";
 	$query_statement .= " WHERE venue.`sports_type` LIKE '%$sports_type%' AND venue.`location` LIKE '%$location%' AND venue.playground_id = playground.playground_id";
 	
@@ -230,22 +235,20 @@ function list_venues_by_sports_location( $sports_type , $location)
 		return('<span class="error_span">No results obtained please modify your search query</span>');
 	}
 	
-	$venues = '<table id="venues_table"><tr><th>Venue Name</th><th>Venue sports type</th><th>Venue time slots</th><th>Rate</th><th>Venue Location</th><th>Contact Number</th><th></th></tr>';
+	$output = "";
 	
 	while($venue = mysql_fetch_array($result))
 	{
-		$venues .= '<tr id="venue_tr_' . $venue['id'] .'"><td>';
-		$venues .= '<label for="venue_radio_' . $venue['name'] . '">' . $venue['name'] .'</label></td><td>';
-		$venues .= '<label for="venue_radio_' . $venue['sports_type'] . '">' . $venue['sports_type'] .'</label></td><td>';
-		$venues .= '<label for="venue_radio_' . $venue['time_slots'] . '">' . $venue['time_slots'] .'</label></td><td>';
-		$venues .= '<label for="venue_radio_' . $venue['rate'] . '">' . $venue['rate'] . '</label></td><td>';
-		$venues .= '<label for="venue_radio_' . $venue['location'] . '">' . $venue['location'] .'</label></td><td>';
-		$venues .= '<label for="venue_radio_' . $venue['contact_number'] . '">' . $venue['contact_number'] .'</label></td><td>';
-		$venues .= '<input type="radio" name="venue_radio" class="venue_radio" id="venue_radio_' . $venue['id'] . '" value="' . $venue['id'] . '">';
-		$venues .= '</td></tr>';
+		$output.= "<table><tr>";
+		$output.= "<tr><a href=''>$venue[playground_name] , $venue[name]</a></tr>";
+		$output.= "<tr><td>Location:</td><td>$venue[location] , $venue[playground_location] <a href=''>View on map</a></td></tr>";
+		$output.= "<tr><td>Time Slots:</td><td>$venue[time_slots] </td></tr>";
+		$output.= "<tr><td>Rate:</td><td>$venue[rate] Rs per time slot</td></tr>";
+		$output.= "<tr><td>Contact:</td><td>$venue[contact_number]</td></tr>";
+		$output.= "</tr></table>";
 	}
 	
-	return($venues);
+	return($output);
 }
 
 function list_venue_by_id($id)
