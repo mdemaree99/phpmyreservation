@@ -7,3 +7,5 @@
 	echo list_venue_by_id($id);
  }
 ?>
+
+<div id="reservation_result_div"></div>

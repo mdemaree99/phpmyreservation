@@ -264,8 +264,7 @@ function list_venue_by_id($id)
 	
 	$venue = mysql_fetch_array($result);
 	
-	$output = "<input  id = 'input_hidden_venue_id' value=\"$venue[id]\">";
-	$output .= "<a href='' id='venue_check_reservation'>$venue[name]</a>";
+	$output = "<a href='' id='venue_check_reservation'>$venue[name]</a>";
 	
 	return $output;
 }

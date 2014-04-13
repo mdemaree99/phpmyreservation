@@ -113,30 +113,37 @@ function showforgot_password()
 
 function showreservations()
 {
-	page_load('reservation');
-	//div_hide('#content_div');
+	/* page_load('reservation');
+	div_hide('#content_div');
 
 	$.get('reservation.php', function(data)
 	{
-		$('#content_div').append(data);
-		//div_fadein('#content_div');
+		$('#content_div').html(data);
+		div_fadein('#content_div');
 		
-		venue_id_input = document.getElementById("input_hidden_venue_id");
-		
-		if(venue_id_input == null)
-		{
-		 alert("Venue id is needed to call reservation.php");
-		 return;
-		}
-		
-		venue_id = venue_id_input.value;
+		venue_id = window.venue_id;
 		
 		$.get('reservation.php?week',{'week': global_week_number , 'venue_id' : venue_id}, function(data)
 		{
 			$('#reservation_table_div').html(data).slideDown('slow', function() { setTimeout(function() { div_fadein('#reservation_table_div'); }, 250); });
 			page_loaded();
 		});
-	});
+	}); */
+	div_hide('#reservation_result_div');
+
+	$.get('reservation.php', function(data)
+	{
+		$('#reservation_result_div').html(data);
+		div_fadein('#reservation_result_div');
+		
+		venue_id = window.venue_id;
+		
+		$.get('reservation.php?week',{'week': global_week_number , 'venue_id' : venue_id}, function(data)
+		{
+			$('#reservation_table_div').html(data).slideDown('slow', function() { setTimeout(function() { div_fadein('#reservation_table_div'); }, 250); });
+			page_loaded();
+		});
+	}); 
 }
 
 function searchvenue()
@@ -155,7 +162,14 @@ function showvenue(id)
 {
 	page_load();
 	div_hide('#content_div');
-	$.get('venue.php',{id : id} , function(data) { $('#content_div').html(data); div_fadein('#content_div'); page_loaded(); });
+	$.get('venue.php',{id : id} , 
+	function(data) 
+	{ 
+		window.venue_id = id;
+		$('#content_div').html(data); 
+		div_fadein('#content_div'); 
+		page_loaded(); 
+	});
 }
 
 function showplaygroundlandingpage()
@@ -203,16 +217,8 @@ function showweek(week, option)
 
 		page_load('week');
 		div_hide('#reservation_table_div');
-		
-		venue_id_input = document.getElementById("input_hidden_venue_id");
-		
-		if(venue_id_input == null)
-		{
-		 alert("Venue id is needed to call reservation.php");
-		 return;
-		}
-		
-		venue_id = venue_id_input.value;
+			
+		venue_id = window.venue_id;
 
 		$.get('reservation.php?week',{'week': week , 'venue_id' : venue_id}, function(data)
 		{
@@ -553,15 +559,7 @@ function create_venue()
 
 function toggle_reservation_time(id, week, day, time, from)
 {
-	venue_id_input = document.getElementById("input_hidden_venue_id");
-		
-	if(venue_id_input == null)
-	{
-	 alert("Venue id is needed to call reservation.php");
-	 return;
-	}
-		
-	venue_id = venue_id_input.value;
+	venue_id = window.venue_id;
 	
 	if(session_user_is_admin == '1')
 	{
@@ -646,30 +644,14 @@ function toggle_reservation_time(id, week, day, time, from)
 
 function read_reservation(id, week, day, time)
 {
-	venue_id_input = document.getElementById("input_hidden_venue_id");
-		
-	if(venue_id_input == null)
-	{
-	 alert("Venue id is needed to call reservation.php");
-	 return;
-	}
-	
-	venue_id = venue_id_input.value;
+	venue_id = window.venue_id;
 	
 	$.post('reservation.php?read_reservation', { venue_id:venue_id, week: week, day: day, time: time }, function(data) { $(id).html(data); });
 }
 
 function read_reservation_details(id, week, day, time)
 {
-	venue_id_input = document.getElementById("input_hidden_venue_id");
-		
-	if(venue_id_input == null)
-	{
-	 alert("Venue id is needed to call reservation.php");
-	 return;
-	}
-	
-	venue_id = venue_id_input.value;
+	venue_id = window.venue_id;
 		
 	if(typeof id != 'undefined' && $(id).html() != '' && $(id).html() != 'Wait...')
 	{
@@ -927,16 +909,8 @@ function get_reservation_reminders()
 }
 
 function add_one_reservation()
-{
-	venue_id_input = document.getElementById("input_hidden_venue_id");
-		
-	if(venue_id_input == null)
-	{
-	 alert("Venue id is needed to call reservation.php");
-	 return;
-	}
-		
-	venue_id = venue_id_input.value;
+{		
+	venue_id = window.venue_id;
 	
 	$('#usage_message_p').html('<img src="img/loading.gif" alt="Loading"> Saving...').slideDown('fast');
 

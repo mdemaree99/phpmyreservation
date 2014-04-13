@@ -2,7 +2,7 @@
 
 include_once('main.php');
 
-if(check_login() != true) { exit; }
+//if(check_login() != true) { exit; }
 
 if(isset($_GET['make_reservation']))
 {
