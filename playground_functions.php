@@ -240,7 +240,7 @@ function list_venues_by_sports_location( $sports_type , $location)
 	while($venue = mysql_fetch_array($result))
 	{
 		$output.= "<table><tr>";
-		$output.= "<tr><a href=''>$venue[playground_name] , $venue[name]</a></tr>";
+		$output.= "<tr><a href=\"?venue=" .$venue['id']. "\">$venue[playground_name] , $venue[name]</a></tr>";
 		$output.= "<tr><td>Location:</td><td>$venue[location] , $venue[playground_location] <a href=''>View on map</a></td></tr>";
 		$output.= "<tr><td>Time Slots:</td><td>$venue[time_slots] </td></tr>";
 		$output.= "<tr><td>Rate:</td><td>$venue[rate] Rs per time slot</td></tr>";
