@@ -232,23 +232,17 @@ function list_venues_by_sports_location( $sports_type , $location)
 
 	if(mysql_num_rows($result) < 1)
 	{
-		return('<span class="error_span">No results obtained please modify your search query</span>');
+		return 0;
 	}
 	
-	$output = "";
+	$venues = array();
 	
 	while($venue = mysql_fetch_array($result))
 	{
-		$output.= "<table><tr>";
-		$output.= "<tr><a href=\"?venue=" .$venue['id']. "\">$venue[playground_name] , $venue[name]</a></tr>";
-		$output.= "<tr><td>Location:</td><td>$venue[location] , $venue[playground_location] <a href=''>View on map</a></td></tr>";
-		$output.= "<tr><td>Time Slots:</td><td>$venue[time_slots] </td></tr>";
-		$output.= "<tr><td>Rate:</td><td>$venue[rate] Rs per time slot</td></tr>";
-		$output.= "<tr><td>Contact:</td><td>$venue[contact_number]</td></tr>";
-		$output.= "</tr></table>";
+		array_push( $venues , $venue );
 	}
 	
-	return($output);
+	return($venues);
 }
 
 function list_venue_by_id($id)

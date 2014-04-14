@@ -6,13 +6,45 @@ if(isset($_GET['search_venue']))
 	$venue = mysql_real_escape_string(trim($_GET['venue_name']));
 	
 	echo list_playgrounds_and_venues_by_name($venue);
-}
+} 
 else if(isset($_GET['search']))
 {
 	$sports_type = isset($_GET['sports_type']) ? mysql_real_escape_string(trim($_GET['sports_type'])) : '';
 	$location = isset($_GET['location']) ? mysql_real_escape_string(trim($_GET['location'])) : '';
 	
-	echo list_venues_by_sports_location($sports_type , $location);
+	$venues = list_venues_by_sports_location($sports_type , $location);
+	
+	if($venues == 0)
+	{
+		echo(
+			'<div class="box_div centred_div">
+				<div class="search_box_body_div ">
+				<span class="error_span">No results obtained please modify your search query</span>
+				</div>	
+			</div>'
+			);
+			
+		return;
+	}
+	
+	foreach ($venues as $venue) 
+	{ //start for each
+?>
+<div class="flat_box_div centred_div">
+	<div class="flat_box_body_div ">
+		<h3><a href="<?php echo "?venue=$venue[id]" ?>"><?php echo $venue['playground_name']. "," .$venue['name'] ?></a></h3>
+		Bellandur > <span class="soft"><?php echo $venue['playground_location'] ?></span>
+		<br/>
+		<span class="soft">Time slots : <?php echo $venue['time_slots'] ?></span>
+		<br/>
+		<span class="soft">Rate : </span><?php echo $venue['rate'] ?> per slot
+		<span class="soft">Contact : <?php echo $venue['contact_number'] ?></span>
+		<br/>
+		<a href="">Reviews</a> | <a href="">Reservations</a>
+	</div>	
+</div>
+<?php
+	}//end for each
 }
 else
 {
@@ -37,12 +69,11 @@ else
 </tr>
 </table>
 
-</form>
-	
-	<div id="search_results"></div>
-	
+</form>	
 </div>
 </div>
+
+<div id="search_results"></div>
 
 <?php
 

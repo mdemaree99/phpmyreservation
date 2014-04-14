@@ -153,8 +153,7 @@ function searchvenue()
 	var location = $('#location_input').val();
 	$.get('searchpage.php?search' , {sports_type : game_type, location : location} , 
 	function(data) {
-			$('#search_results').html("<hr/>");
-			$('#search_results').append(data);
+			$('#search_results').html(data);
 		});
 }
 
