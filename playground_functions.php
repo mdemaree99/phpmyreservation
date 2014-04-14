@@ -258,9 +258,7 @@ function list_venue_by_id($id)
 	
 	$venue = mysql_fetch_array($result);
 	
-	$output = "<a href='' id='venue_check_reservation'>$venue[name]</a>";
-	
-	return $output;
+	return $venue;
 }
 
 function get_venue_attribute($attribute , $venue_id)

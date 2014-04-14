@@ -16,6 +16,28 @@ function showsearchpage()
 	}); 
 }
 
+function showsearch(game_type,location)
+{
+	showsearchpage();
+	searchvenue(game_type,location);
+}
+
+function setwindowlocation(input)
+{
+	switch(input)
+	{
+		case 'game_type_location' :
+			var game_type = $('#game_type_input').val();
+			var location = $('#location_input').val();
+			loc = '?search' + '=' + game_type +'=' + location;
+			window.location.replace(loc);
+			break;
+		default:
+			window.location.replace('.');
+			break;
+	}
+}
+
 function showdashboard()
 {
 	if(typeof session_logged_in != 'undefined')
@@ -113,22 +135,6 @@ function showforgot_password()
 
 function showreservations()
 {
-	/* page_load('reservation');
-	div_hide('#content_div');
-
-	$.get('reservation.php', function(data)
-	{
-		$('#content_div').html(data);
-		div_fadein('#content_div');
-		
-		venue_id = window.venue_id;
-		
-		$.get('reservation.php?week',{'week': global_week_number , 'venue_id' : venue_id}, function(data)
-		{
-			$('#reservation_table_div').html(data).slideDown('slow', function() { setTimeout(function() { div_fadein('#reservation_table_div'); }, 250); });
-			page_loaded();
-		});
-	}); */
 	div_hide('#reservation_result_div');
 
 	$.get('reservation.php', function(data)
@@ -146,14 +152,15 @@ function showreservations()
 	}); 
 }
 
-function searchvenue()
+function searchvenue(game_type , location)
 {
 	page_load();
-	var game_type = $('#game_type_input').val();
-	var location = $('#location_input').val();
+	
 	$.get('searchpage.php?search' , {sports_type : game_type, location : location} , 
 	function(data) {
 			$('#search_results').html(data);
+			$('#game_type_input').val(game_type);
+			$('#location_input').val(location);
 		});
 }
 
@@ -1139,7 +1146,7 @@ $(document).ready( function()
 	$(document).on('submit', '#system_configuration_form', function() { save_system_configuration(); return false; });
 	$(document).on('submit', '#user_details_form', function() { change_user_details(); return false; });
 	$(document).on('submit', '#new_venue_form', function() { create_venue(); return false; });
-	$(document).on('submit', '#game_search_form', function() { searchvenue(); return false; });
+	$(document).on('submit', '#game_search_form', function() { setwindowlocation('game_type_location'); return false; });
 
 	// Links
 	$(document).on('click mouseover', '#user_secret_code_a', function() { div_fadein('#user_secret_code_div'); return false; });
@@ -1232,12 +1239,15 @@ function handlequery(query)
 {
 	query_arr = query.split("="); 
 	query_string = query_arr[0];
-	query_id = query_arr[1];
 	
 	switch(query_string)
 	{
 		case 'venue' :
+			query_id = query_arr[1];
 			showvenue(query_id);
+			break;
+		case 'search' :
+			showsearch(query_arr[1],query_arr[2]);
 			break;
 		default:
 			window.location.replace('.');
