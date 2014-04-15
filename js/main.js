@@ -174,7 +174,8 @@ function showvenue(id)
 		window.venue_id = id;
 		$('#content_div').html(data); 
 		div_fadein('#content_div'); 
-		page_loaded(); 
+		showreservations();
+		page_loaded(); 		
 	});
 }
 

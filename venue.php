@@ -42,7 +42,7 @@
 		
 		<br/>
 		<br/>
-		<a href="">Images</a> | <a href="">Reviews</a> | <a href='' id='venue_check_reservation'>Show Reservations</a>
+		<a href="">Read Reviews</a> 
 	</div>	
 	</div>
 
