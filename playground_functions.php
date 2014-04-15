@@ -78,13 +78,13 @@ function check_playground_login()
 	}
 }
 
-function create_playground($playground_name, $playground_email, $playground_password, $playground_secret_code)
+function create_playground($playground_name, $playground_email, $playground_password, $locality , $address, $playground_secret_code)
 {
-	if(validate_user_name($playground_name) != true)
+	/*if(validate_user_name($playground_name) != true)
 	{
 		return('<span class="error_span">Name must be <u>letters only</u> and be <u>2 to 12 letters long</u>. If your name is longer, use a short version of your name</span>');
-	}
-	elseif(validate_user_email($playground_email) != true)
+	}*/
+	if(validate_user_email($playground_email) != true)
 	{
 		return('<span class="error_span">Email must be a valid email address and be no more than 50 characters long</span>');
 	}
@@ -120,7 +120,7 @@ function create_playground($playground_name, $playground_email, $playground_pass
 
 		$playground_password = encrypt_password($playground_password);
 
-		mysql_query("INSERT INTO " . global_mysql_playgrounds_table . " (playground_is_admin,playground_email,playground_password,playground_name,playground_reservation_reminder) VALUES ($playground_is_admin,'$playground_email','$playground_password','$playground_name','0')")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+		mysql_query("INSERT INTO " . global_mysql_playgrounds_table . " (playground_is_admin,playground_email,playground_password,playground_name,playground_location,locality,playground_reservation_reminder) VALUES ($playground_is_admin,'$playground_email','$playground_password','$playground_name','$locality', '$address' ,'0')")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
 
 		$playground_password = strip_salt($playground_password);
 

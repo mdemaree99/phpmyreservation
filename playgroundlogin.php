@@ -21,8 +21,10 @@ elseif(isset($_GET['create_playground']))
 	$playground_name = mysql_real_escape_string(trim($_POST['playground_name']));
 	$playground_email = mysql_real_escape_string($_POST['playground_email']);
 	$playground_password = mysql_real_escape_string($_POST['playground_password']);
+	$locality_input = mysql_real_escape_string($_POST['locality_input']);
+	$address_input = mysql_real_escape_string($_POST['address_input']);
 	$playground_secret_code = $_POST['playground_secret_code'];
-	echo create_playground($playground_name, $playground_email, $playground_password, $playground_secret_code);
+	echo create_playground($playground_name, $playground_email, $playground_password, $locality_input,$address_input, $playground_secret_code);
 }
 elseif(isset($_GET['new_playground']))
 {
@@ -36,8 +38,10 @@ elseif(isset($_GET['new_playground']))
 
 	<label for="playground_name_input">Playground Name:</label><br>
 	<input type="text" id="playground_name_input"><br><br>
+	<label for="locality_input">Locality:</label><br>
+	<input type="text" id="locality_input"><br><br>
 	<label for="address_input">Playground Address:</label><br>
-	<input type="text" id="address_input"><br><br>
+	<textarea id="address_input"></textarea><br><br>
 	<label for="playground_email_input">Email:</label><br>
 	<input type="text" id="playground_email_input" autocapitalize="off"><br><br>
 	<label for="playground_password_input">Password:</label><br>

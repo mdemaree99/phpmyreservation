@@ -62,6 +62,8 @@ else{
 	<input type="text" id="venue_location_input"><br><br>
 	<label for="venue_contact_number_input">Venue contact number</label><br>
 	<input type="text" id="venue_contact_number_input"><br><br>
+	<label for="venue_agent_code_input">Agent code: <sup><a href="." id="user_secret_code_a" tabindex="-1">What's this?</a></sup></label><br>
+	<input type="password" id="venue_agent_code_input"><br><br>
 	<input type="submit" value="Save">
 
 	</p></form>
@@ -75,6 +77,8 @@ else{
 	<li>Enter all the time slots seperated by semicolon(;) , example:-<br/> 9AM-10AM;10AM-11AM;11AM-12PM;12PM-1PM;1PM-2PM <br/>or <br/> 10AM to 12PM;2PM to 4PM;6PM to 8PM <br/> etc</li>
 	</ul>
 
+	<div id="user_secret_code_div">Agent code is used to track an agent's referral while creating a new Venue. If you are unsure what to put, leave it blank.</div>
+	
 	</div></div>
 	
 	<p id="new_venue_message_p"></p>

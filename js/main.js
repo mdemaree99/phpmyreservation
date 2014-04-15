@@ -483,6 +483,8 @@ function create_playground()
 	var playground_email = $('#playground_email_input').val();
 	var playground_password = $('#playground_password_input').val();
 	var playground_password_confirm = $('#playground_password_confirm_input').val();
+	var playground_address = $('#address_input').val();
+	var playground_locality = $('#locality_input').val();
 
 	if($('#playground_secret_code_input').length)
 	{
@@ -504,7 +506,7 @@ function create_playground()
 	{
 		$('#new_playground_message_p').html('<img src="img/loading.gif" alt="Loading"> Creating playground...').slideDown('fast');
 
-		$.post('playgroundlogin.php?create_playground', { playground_name: playground_name, playground_email: playground_email, playground_password: playground_password, playground_secret_code: playground_secret_code }, function(data)
+		$.post('playgroundlogin.php?create_playground', { playground_name: playground_name, locality_input:playground_locality , address_input: playground_address ,playground_email: playground_email, playground_password: playground_password, playground_secret_code: playground_secret_code }, function(data)
 		{
 			if(data == 1)
 			{
