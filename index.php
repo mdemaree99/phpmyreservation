@@ -37,7 +37,21 @@
 <div id="content_div"></div>
 
 <div id="booking_div">
-Hi , Iam the booking div
+	<div class="booking_div_header">
+		<h3>Your Bookings</h3>
+	</div>
+	<div class="booking_div_body">
+		<ul>
+			<li>Playmania,Bellandur, Badminton court1 , 17th March 2014 , 9PM-10PM @ Rs 200</li>
+			<li>Playmania,Bellandur, Badminton court1 , 18th March 2014 , 9PM-10PM @ Rs 200</li>
+		</ul>
+	</div>
+	<hr/>
+	<div class="booking_div_total">
+		Total = Rs 400
+		<br/>
+		<input type="submit" value="Proceed to Pay">
+	</div>
 </div>
 
 <div id="preload_div">
