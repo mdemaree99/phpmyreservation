@@ -39,7 +39,7 @@ function playgroundlogin($playground_email, $playground_password, $playground_re
 			$playground = mysql_fetch_array($query);
 
 			$_SESSION['user_id'] = $playground['playground_id'];
-			$_SESSION['user_is_admin'] = $playground['playground_is_admin'];
+			$_SESSION['user_is_admin'] = 1;
 			$_SESSION['user_email'] = $playground['playground_email'];
 			$_SESSION['user_name'] = $playground['playground_name'];
 			$_SESSION['user_reservation_reminder'] = $playground['playground_reservation_reminder'];

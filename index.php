@@ -36,6 +36,10 @@
 
 <div id="content_div"></div>
 
+<div id="booking_div">
+Hi , Iam the booking div
+</div>
+
 <div id="preload_div">
 <img src="img/loading.gif" alt="Loading">
 </div>
