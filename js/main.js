@@ -147,6 +147,9 @@ function showreservations()
 		$.get('reservation.php?week',{'week': global_week_number , 'venue_id' : venue_id}, function(data)
 		{
 			$('#reservation_table_div').html(data).slideDown('slow', function() { setTimeout(function() { div_fadein('#reservation_table_div'); }, 250); });
+			
+			ShowTemporaryReservations();
+			
 			page_loaded();
 		});
 	}); 
@@ -333,6 +336,28 @@ function set_booking_div_content()
 	$('#booking_div_body').html(result);
 	$('#booking_div_total').html("Total = Rs " + "<b>" + total.toString() +"</b>");
 	
+}
+
+function ShowTemporaryReservations()
+{
+	var bookings;
+	try 
+	{
+        bookings = JSON.parse(window.localStorage.bookings);
+    } catch (e) {
+		return '';
+    }
+	
+	for( i=0 ; i < bookings.length ; i++ )
+	{
+		id = "div:"+bookings[i].week+":"+bookings[i].day+":"+bookings[i].time+":"+window.venue_id;
+		
+		//$(id).css("background-color" , "yellow");
+		element = document.getElementById(id);
+		//alert(typeof element);
+		element.style.backgroundColor = "yellow";
+		element.innerHTML = "Selected";
+	}
 }
 
 function page_load(page)
@@ -651,7 +676,7 @@ function hasDuplicates(haystack_array , needle_object) {
     return -1;
 }
 
-function toggle_temporary_reservation(venue_id , week, day , time , price)
+function toggle_temporary_reservation(id , venue_id , week, day , time , price)
 {
 	var booking = {"venue_name": window.sessionStorage.venue_name,"venue_id" : venue_id , "week" : week , "day" : day , "time" : time , "price" : price};
 	
@@ -671,11 +696,17 @@ function toggle_temporary_reservation(venue_id , week, day , time , price)
 		//Add the element , since it was not there already
 		bookings.push(booking);
 		window.localStorage.bookings = JSON.stringify(bookings);
+		
+		$(id).css("background-color" , "yellow");
+		$(id).html("Selected");
 	}else
 	{
 		//Remove the element as it was already there
 		bookings.splice(index , 1);
 		window.localStorage.bookings = JSON.stringify(bookings);
+		
+		$(id).css("background-color" , "white");
+		$(id).html("");
 	}
 	
 	show_hide_booking_div();
@@ -699,39 +730,22 @@ function toggle_reservation_time(id, week, day, time, from)
 
 	var user_name = $(id).html();
 
-	if(user_name == '')
+	if(user_name == '' || user_name == 'Selected' )
 	{
-		$(id).html('Wait...'); 
-		
-		//Todo: Add code here to put data into HTML5 storage
+		//$(id).html('Wait...'); 
 				
 		$.get('venue.php?getprice', { id: venue_id }, function(data) 
 		{
 			price = data;
 			if( !isNaN(price) )
 			{
-				toggle_temporary_reservation(venue_id , week, day , time , price ); 
+				toggle_temporary_reservation( id , venue_id , week, day , time , price ); 
 			}
 			else
 			{
 				//toggle_temporary_reservation(venue_id , week, day , time , 0); 
 			}
 		});
-
-		/*
-		$.post('reservation.php?make_reservation', { venue_id: venue_id, week: week, day: day, time: time }, function(data) 
-		{
-			if(data == 1)
-			{
-				setTimeout(function() { read_reservation(id, week, day, time); }, 1000);
-			}
-			else
-			{
-				notify(data, 4);
-				setTimeout(function() { read_reservation(id, week, day, time); }, 2000);			
-			}
-		});
-		*/
 	}
 	else
 	{
@@ -793,8 +807,12 @@ function read_reservation(id, week, day, time)
 function read_reservation_details(id, week, day, time)
 {
 	venue_id = window.venue_id;
-		
-	if(typeof id != 'undefined' && $(id).html() != '' && $(id).html() != 'Wait...')
+	
+	if($(id).html() == 'Selected')
+	{
+		$('#reservation_details_div').html("You have selected this slot temporarily");
+	}		
+	else if(typeof id != 'undefined' && $(id).html() != '' && $(id).html() != 'Wait...')
 	{
 		if($('#reservation_details_div').is(':hidden'))
 		{
@@ -1269,6 +1287,8 @@ $(document).ready( function()
 	$(document).on('click', '#delete_all_users_button', function() { delete_all('users'); });
 	$(document).on('click', '#delete_everything_button', function() { delete_all('everything'); });
 	$(document).on('click', '#add_one_reservation_button', function() { add_one_reservation(); });
+	$(document).on('click', '#clear_booking_button', function() { window.localStorage.bookings = ""; show_hide_booking_div(); });
+	
 
 	// Checkboxes
 	$(document).on('click', '#reservation_reminders_checkbox', function() { toggle_reservation_reminder(); });

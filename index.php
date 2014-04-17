@@ -39,7 +39,7 @@
 
 <div id="booking_div">
 	<div class="booking_div_header">
-		<h3>Your Bookings</h3>
+		<h3>Your Unpaid Bookings</h3>
 	</div>
 	<div id="booking_div_body">
 	</div>
@@ -51,16 +51,16 @@
 	<h3>Enter your details below :</h3>
 	<form >
 		<label for="booking_name_input">Name:</label>
-		<input id="booking_name_input" type="text">
+		<input id="booking_name_input" type="text" value="">
 		<label for="booking_phone_input">Mobile number:</label>
 		<input id="booking_phone_input" type="text">
 		<label for="booking_email_input">Email:</label>
-		<input id="booking_email_input" type="text">
+		<input id="booking_email_input" type="text" value="<?php echo get_login_data('user_email'); ?>">
 	</form>
 	</div>
 	<hr/>
 	<div id="booking_div_submit_button" class="pull_right">
-	<input type="submit" value="Clear bookings">
+	<input type="submit" id="clear_booking_button" value="Clear bookings">
 	<input type="submit" value="Proceed to Pay">
 	</div>
 </div>
