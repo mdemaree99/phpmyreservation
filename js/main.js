@@ -294,6 +294,13 @@ function show_hide_booking_div()
 
 function set_booking_div_content()
 {
+	//ISO 8601 week adjustemnt
+	
+	//Get the day of $th Jan of this yeaar
+	day_4th_jan = new Date(global_year, 0, 4).getDay();
+	//Get the shift in days : the ISO 8601's 1st week is the one with the year's first thursday
+	shift = (4 - day_4th_jan);
+	
 	var bookings;
 	try 
 	{
@@ -307,7 +314,10 @@ function set_booking_div_content()
 	var result = "<ul>";
 	for( i=0 ; i < bookings.length ; i++ )
 	{
-		date = Date(global_year ,0,(bookings[i].week -1)*7 + bookings[i].day);
+		week = parseInt(bookings[i].week);
+		day = parseInt(bookings[i].day);
+		day_number = (week -1)*7 + day + shift;
+		date = new Date(global_year ,0,day_number);
 		result += "<li>";
 		result += "  " + moment(date).format( "DD-MMM-YYYY") ;
 		result += " , " + bookings[i].time;
