@@ -44,9 +44,12 @@
 	<div id="booking_div_body">
 	</div>
 	<hr/>
-	<div id="booking_div_total">
+	<div id="booking_div_total" class="pull_right">
 	</div>
+	<hr/>
+	<div id="booking_div_submit_button" class="pull_right">
 	<input type="submit" value="Proceed to Pay">
+	</div>
 </div>
 
 <div id="preload_div">

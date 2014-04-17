@@ -27,6 +27,12 @@ div#booking_div
 	overflow-y: auto;
 }
 
+div .pull_right
+{
+	float: right;
+	padding-right: 15px;
+}
+
 div.booking_div_header
 {
 	padding: 8px 15px; 

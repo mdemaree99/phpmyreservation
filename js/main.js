@@ -321,7 +321,7 @@ function set_booking_div_content()
 		result += "<li>";
 		result += "  " + moment(date).format( "DD-MMM-YYYY") ;
 		result += " , " + bookings[i].time;
-		result += " at " + '"' + window.sessionStorage.venue_name + '"';
+		result += " at " + '"' + bookings[i].venue_name + '"';
 		result += " for Rs " + bookings[i].price;
 		result += "</li>";
 		
@@ -331,7 +331,7 @@ function set_booking_div_content()
 	
 	
 	$('#booking_div_body').html(result);
-	$('#booking_div_total').html("Total = Rs " + total.toString());
+	$('#booking_div_total').html("Total = Rs " + "<b>" + total.toString() +"</b>");
 	
 }
 
@@ -653,7 +653,7 @@ function hasDuplicates(haystack_array , needle_object) {
 
 function toggle_temporary_reservation(venue_id , week, day , time , price)
 {
-	var booking = {"venue_id" : venue_id , "week" : week , "day" : day , "time" : time , "price" : price};
+	var booking = {"venue_name": window.sessionStorage.venue_name,"venue_id" : venue_id , "week" : week , "day" : day , "time" : time , "price" : price};
 	
 	var bookings;
 	
