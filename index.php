@@ -47,7 +47,20 @@
 	<div id="booking_div_total" class="pull_right">
 	</div>
 	<hr/>
+	<div id="booking_info" class="center">
+	<h3>Enter your details below :</h3>
+	<form >
+		<label for="booking_name_input">Name:</label>
+		<input id="booking_name_input" type="text">
+		<label for="booking_phone_input">Mobile number:</label>
+		<input id="booking_phone_input" type="text">
+		<label for="booking_email_input">Email:</label>
+		<input id="booking_email_input" type="text">
+	</form>
+	</div>
+	<hr/>
 	<div id="booking_div_submit_button" class="pull_right">
+	<input type="submit" value="Clear bookings">
 	<input type="submit" value="Proceed to Pay">
 	</div>
 </div>

@@ -27,6 +27,16 @@ div#booking_div
 	overflow-y: auto;
 }
 
+div #booking_info
+{
+	padding-left:15px;
+}
+
+div #booking_div_submit_button
+{
+	padding-bottom:45px;
+}
+
 div .pull_right
 {
 	float: right;
