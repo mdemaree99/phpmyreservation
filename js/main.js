@@ -263,6 +263,27 @@ function showhelp()
 
 // Page load
 
+function show_hide_booking_div()
+{
+	var bookings;
+	
+	try 
+	{
+        bookings = JSON.parse(window.localStorage.bookings);
+    } catch (e) {
+        $('#booking_div').hide();
+		return;
+    }
+	
+	if(bookings.length < 1)
+	{
+		$('#booking_div').hide();
+		return;
+	}
+	
+	$('#booking_div').show();
+}
+
 function page_load(page)
 {
 	// All
@@ -273,6 +294,8 @@ function page_load(page)
 			notify('Loading...', 300);
 		}
 	}, 500);
+	
+	show_hide_booking_div();
 
 	// Individual
 	if(page == 'reservation')
@@ -566,6 +589,47 @@ function create_venue()
 
 // Reservation
 
+function hasDuplicates(haystack_array , needle_object) {
+    
+    for (var i = 0; i < haystack_array.length; ++i) {
+        var value = haystack_array[i];
+        if (JSON.stringify(value) === JSON.stringify(needle_object)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+function toggle_temporary_reservation(venue_id , week, day , time )
+{
+	var booking = {"venue_id" : venue_id , "week" : week , "day" : day , "time" : time};
+	
+	var bookings;
+	
+	try 
+	{
+        bookings = JSON.parse(window.localStorage.bookings);
+    } catch (e) {
+        bookings = new Array();
+    }
+	
+	var index = hasDuplicates(bookings,booking);
+	
+	if( index < 0)
+	{	
+		//Add the element , since it was not there
+		bookings.push(booking);
+		window.localStorage.bookings = JSON.stringify(bookings);
+	}else
+	{
+		//Remove the element as it was already there
+		bookings.splice(index , 1);
+		window.localStorage.bookings = JSON.stringify(bookings);
+	}
+	
+	show_hide_booking_div();
+}
+
 function toggle_reservation_time(id, week, day, time, from)
 {
 	venue_id = window.venue_id;
@@ -587,7 +651,11 @@ function toggle_reservation_time(id, week, day, time, from)
 	if(user_name == '')
 	{
 		$(id).html('Wait...'); 
+		
+		//Todo: Add code here to put data into HTML5 storage
+		toggle_temporary_reservation(venue_id , week, day , time ); 
 
+		/*
 		$.post('reservation.php?make_reservation', { venue_id: venue_id, week: week, day: day, time: time }, function(data) 
 		{
 			if(data == 1)
@@ -600,6 +668,7 @@ function toggle_reservation_time(id, week, day, time, from)
 				setTimeout(function() { read_reservation(id, week, day, time); }, 2000);			
 			}
 		});
+		*/
 	}
 	else
 	{
