@@ -1,7 +1,19 @@
 <?php
  include_once 'main.php';
  
- if(isset($_GET['id']))
+ if(isset($_GET['getprice']))
+ {
+	$id = mysql_real_escape_string($_GET['id']);
+	echo get_venue_attribute('rate',$id);
+	return;
+ }
+ if(isset($_GET['getname']))
+ {
+	$id = mysql_real_escape_string($_GET['id']);
+	echo get_venue_attribute('name',$id);
+	return;
+ }
+ else if(isset($_GET['id']))
  {
 	$id = mysql_real_escape_string($_GET['id']);
 	$venue = list_venue_by_id($id);
@@ -46,9 +58,12 @@
 	</div>	
 	</div>
 
+	<div id="reservation_result_div"></div>
 <?php
  }
+ 
+ 
 ?>
 
-<div id="reservation_result_div"></div>
+
 

@@ -17,6 +17,7 @@
 <script src="js/main.js" type="text/javascript"></script>
 <script src="js/backstretch.js" type="text/javascript"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js" ></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js"></script>
 
 <link href="css/style.css" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="img/favicon.ico">
@@ -40,18 +41,12 @@
 	<div class="booking_div_header">
 		<h3>Your Bookings</h3>
 	</div>
-	<div class="booking_div_body">
-		<ul>
-			<li>Playmania,Bellandur, Badminton court1 , 17th March 2014 , 9PM-10PM @ Rs 200</li>
-			<li>Playmania,Bellandur, Badminton court1 , 18th March 2014 , 9PM-10PM @ Rs 200</li>
-		</ul>
+	<div id="booking_div_body">
 	</div>
 	<hr/>
-	<div class="booking_div_total">
-		Total = Rs 400
-		<br/>
-		<input type="submit" value="Proceed to Pay">
+	<div id="booking_div_total">
 	</div>
+	<input type="submit" value="Proceed to Pay">
 </div>
 
 <div id="preload_div">

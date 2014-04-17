@@ -177,6 +177,12 @@ function showvenue(id)
 		showreservations();
 		page_loaded(); 		
 	});
+	
+	$.get('venue.php?getname',{id : id} , 
+	function(data) 
+	{ 
+		window.sessionStorage.venue_name = data;		
+	});
 }
 
 function showplaygroundlandingpage()
@@ -267,6 +273,8 @@ function show_hide_booking_div()
 {
 	var bookings;
 	
+	set_booking_div_content();
+	
 	try 
 	{
         bookings = JSON.parse(window.localStorage.bookings);
@@ -281,7 +289,40 @@ function show_hide_booking_div()
 		return;
 	}
 	
-	$('#booking_div').show();
+	$('#booking_div').show("slow");
+}
+
+function set_booking_div_content()
+{
+	var bookings;
+	try 
+	{
+        bookings = JSON.parse(window.localStorage.bookings);
+    } catch (e) {
+		return '';
+    }
+	
+	var i;
+	var total = 0;
+	var result = "<ul>";
+	for( i=0 ; i < bookings.length ; i++ )
+	{
+		date = Date(global_year ,0,(bookings[i].week -1)*7 + bookings[i].day);
+		result += "<li>";
+		result += "  " + moment(date).format( "DD-MMM-YYYY") ;
+		result += " , " + bookings[i].time;
+		result += " at " + '"' + window.sessionStorage.venue_name + '"';
+		result += " for Rs " + bookings[i].price;
+		result += "</li>";
+		
+		total +=  parseInt(bookings[i].price);
+	}
+	result += "</ul>";
+	
+	
+	$('#booking_div_body').html(result);
+	$('#booking_div_total').html("Total = Rs " + total.toString());
+	
 }
 
 function page_load(page)
@@ -600,9 +641,9 @@ function hasDuplicates(haystack_array , needle_object) {
     return -1;
 }
 
-function toggle_temporary_reservation(venue_id , week, day , time )
+function toggle_temporary_reservation(venue_id , week, day , time , price)
 {
-	var booking = {"venue_id" : venue_id , "week" : week , "day" : day , "time" : time};
+	var booking = {"venue_id" : venue_id , "week" : week , "day" : day , "time" : time , "price" : price};
 	
 	var bookings;
 	
@@ -617,7 +658,7 @@ function toggle_temporary_reservation(venue_id , week, day , time )
 	
 	if( index < 0)
 	{	
-		//Add the element , since it was not there
+		//Add the element , since it was not there already
 		bookings.push(booking);
 		window.localStorage.bookings = JSON.stringify(bookings);
 	}else
@@ -653,7 +694,19 @@ function toggle_reservation_time(id, week, day, time, from)
 		$(id).html('Wait...'); 
 		
 		//Todo: Add code here to put data into HTML5 storage
-		toggle_temporary_reservation(venue_id , week, day , time ); 
+				
+		$.get('venue.php?getprice', { id: venue_id }, function(data) 
+		{
+			price = data;
+			if( !isNaN(price) )
+			{
+				toggle_temporary_reservation(venue_id , week, day , time , price ); 
+			}
+			else
+			{
+				//toggle_temporary_reservation(venue_id , week, day , time , 0); 
+			}
+		});
 
 		/*
 		$.post('reservation.php?make_reservation', { venue_id: venue_id, week: week, day: day, time: time }, function(data) 
