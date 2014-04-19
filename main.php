@@ -4,7 +4,7 @@
 
 define('global_project_name', 'phpMyReservation');
 define('global_project_version', '1.0');
-define('global_project_website', 'http://www.olejon.net/code/phpmyreservation/');
+define('global_project_website', 'localhost');
 
 // Include necessary files
 
