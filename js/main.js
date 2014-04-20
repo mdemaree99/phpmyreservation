@@ -733,81 +733,25 @@ function toggle_reservation_time(id, week, day, time, from)
 {
 	venue_id = window.venue_id;
 	
-	if(session_user_is_admin == '1')
+	if(week < global_week_number || week == global_week_number && day < global_day_number)
 	{
-		if(week < global_week_number || week == global_week_number && day < global_day_number)
-		{
-			notify('You are reserving back in time. You can do that because you\'re an admin', 4);
-		}
-		else if(week > global_week_number + global_weeks_forward)
-		{
-			notify('You are reserving more than '+global_weeks_forward+' weeks forward in time. You can do that because you\'re an admin', 4);
-		}
+		notify('You are not allowed to reserve back intime',4);
+		return;
+	}
+	else if(week > global_week_number + global_weeks_forward)
+	{
+		notify('You are not allowed to reserve more than '+global_weeks_forward+' weeks forward in time',4);
+		return;
 	}
 
-	var user_name = $(id).html();
-
-	if(user_name == '' || user_name == 'Selected' )
+	$.get('venue.php?getprice', { id: venue_id }, function(data) 
 	{
-		//$(id).html('Wait...'); 
-				
-		$.get('venue.php?getprice', { id: venue_id }, function(data) 
+		price = data;
+		if( !isNaN(price) )
 		{
-			price = data;
-			if( !isNaN(price) )
-			{
-				toggle_temporary_reservation( id , venue_id , week, day , time , price ); 
-			}
-		});
-	}
-	else
-	{
-		if(offclick_event == 'mouseup' || from == 'details')
-		{
-			if(user_name == 'Wait...')
-			{
-				notify('One click is enough', 4);
-			}
-			else if(user_name == session_user_name || session_user_is_admin == '1')
-			{
-				if(user_name != session_user_name && session_user_is_admin == '1')
-				{
-					var delete_confirm = confirm('This is not your reservation, but because you\'re an admin you can remove other users\' reservations. Are you sure you want to do this?');
-				}
-				else
-				{
-					var delete_confirm = true;
-				}
-
-				if(delete_confirm)
-				{
-					$(id).html('Wait...');
-
-					$.post('reservation.php?delete_reservation', { venue_id: venue_id, week: week, day: day, time: time }, function(data)
-					{
-						if(data == 1)
-						{
-							setTimeout(function() { read_reservation(id, week, day, time); }, 1000);
-						}
-						else
-						{
-							notify(data, 4);
-							setTimeout(function() { read_reservation(id, week, day, time); }, 2000);
-						}
-					});
-				}
-			}
-			else
-			{
-				notify('You can\'t remove other users\' reservations', 2);
-			}
-
-			if($('#reservation_details_div').is(':visible'))
-			{
-				read_reservation_details();
-			}
+			toggle_temporary_reservation( id , venue_id , week, day , time , price ); 
 		}
-	}
+	});			
 }
 
 function read_reservation(id, week, day, time)
