@@ -42,6 +42,13 @@ function showsearch(game_type,location)
 	searchvenue(game_type,location);
 }
 
+function showbookings()
+{
+	page_load();
+	div_hide('#content_div');
+	$.get('checkbookings.php', function(data) { $('#content_div').html(data); div_fadein('#content_div'); page_loaded(); });
+}
+
 function showdashboard()
 {
 	if(typeof session_logged_in != 'undefined')
@@ -668,10 +675,14 @@ function create_venue()
 	var venue_rate = $('#venue_rate_input').val();
 	var venue_location = $('#venue_location_input').val();
 	var venue_contact_number = $('#venue_contact_number_input').val();
+	var venue_day_off = '';
+	$('input:checked').each(function() {
+		venue_day_off = venue_day_off + $(this).val() + ',' ;
+		});
 	
 	$('#new_venue_message_p').html('<img src="img/loading.gif" alt="Loading"> Creating Venue...').slideDown('fast');
 
-	$.post('playgroundlandingpage.php?create_venue', { venue_name: venue_name, venue_sports_type: venue_sports_type, venue_time_slots: venue_time, rate_per_time_slot: venue_rate, venue_location: venue_location, venue_contact_number: venue_contact_number }, function(data)
+	$.post('playgroundlandingpage.php?create_venue', { venue_name: venue_name, venue_sports_type: venue_sports_type, venue_time_slots: venue_time, rate_per_time_slot: venue_rate, venue_location: venue_location, venue_contact_number: venue_contact_number, venue_day_off: venue_day_off }, function(data)
 	{
 		if(data == 1)
 		{
@@ -1114,6 +1125,25 @@ function change_user_details()
 
 // Venue
 
+function fill_venue_form()
+{
+	if(typeof $(".venue_radio:checked").val() !='undefined')
+	{
+		var delete_confirm = confirm('Are you sure?');
+
+		if(delete_confirm)
+		{
+			var venue_id = $(".venue_radio:checked").val();
+
+			
+		}
+	}
+	else
+	{
+		$('#venue_administration_message_p').html('<span class="error_span">You must pick a venue</span>').slideDown('fast');
+	}
+}
+
 function delete_venue_data(delete_data)
 {
 	if(typeof $(".venue_radio:checked").val() !='undefined')
@@ -1240,6 +1270,7 @@ $(document).ready( function()
 	$(document).on('click', '#delete_user_reservations_button', function() { delete_user_data('reservations'); });
 	$(document).on('click', '#delete_user_button', function() { delete_user_data('user'); });
 	$(document).on('click', '#delete_venue_button', function() { delete_venue_data('venue'); });
+	$(document).on('click', '#update_venue_button', function() { fill_venue_form(); });
 	$(document).on('click', '#delete_all_reservations_button', function() { delete_all('reservations'); });
 	$(document).on('click', '#delete_all_users_button', function() { delete_all('users'); });
 	$(document).on('click', '#delete_everything_button', function() { delete_all('everything'); });
@@ -1305,6 +1336,9 @@ function hash()
 			break;
 		case 'search' :
 			showsearchpage();
+			break;
+		case 'bookings' :
+			showbookings();
 			break;
 		case 'venue' :
 			showvenue();
