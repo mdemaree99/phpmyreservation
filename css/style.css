@@ -220,6 +220,11 @@ div.centred_div
 	width: 600px;
 }
 
+div.fat_centred_div
+{
+	width: 800px;
+}
+
 div#about_div
 {
 	width: 600px;

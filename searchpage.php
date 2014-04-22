@@ -33,7 +33,9 @@ else if(isset($_GET['search']))
 <div class="flat_box_div centred_div">
 	<div class="flat_box_body_div ">
 		<h3><a href="<?php echo "?venue=$venue[id]" ?>"><?php echo $venue['playground_name']. "," .$venue['name'] ?></a></h3>
-		Bellandur > <span class="soft"><?php echo $venue['playground_location'] ?></span>
+		<span class="soft"><?php echo $venue['sports_type']; ?></span>
+		<br/>
+		<?php echo $venue['locality']; ?> > <span class="soft"><?php echo $venue['playground_location'] ?></span>
 		<br/>
 		<span class="soft">Time slots : <?php echo $venue['time_slots'] ?></span>
 		<br/>

@@ -42,6 +42,8 @@ elseif(isset($_GET['new_playground']))
 	<input type="text" id="locality_input"><br><br>
 	<label for="address_input">Playground Address:</label><br>
 	<textarea id="address_input"></textarea><br><br>
+	<label for="about_input">Brief description:</label><br>
+	<textarea id="about_input"></textarea><br><br>
 	<label for="playground_email_input">Email:</label><br>
 	<input type="text" id="playground_email_input" autocapitalize="off"><br><br>
 	<label for="playground_password_input">Password:</label><br>

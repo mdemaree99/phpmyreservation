@@ -26,13 +26,13 @@
 ?>
 
 
-	<div class="box_div centred_div">
+	<div class="box_div fat_centred_div">
 	<div class="search_box_body_div ">
-		<h2><?php echo $venue['name'] ?></h2>
+		<h2><?php echo $venue['name'].','.$venue['playground_name'] ?></h2>
 		<hr/>
 		<table>
 			<tr>
-			<td><b>Address : </b></td><td>Outer Ring Road , Bellandur</td>
+			<td><b>Address : </b></td><td><?php echo $venue['locality'].','.$venue['playground_location'] ?></td>
 			</tr>
 			<tr>
 			<td><b>Time slots : </b></td><td><?php echo $venue['time_slots'] ?></td>
@@ -45,7 +45,10 @@
 			</tr>
 		</table>
 		<hr/>
-		<p class="bold_p">Venue Images</p>
+		
+		<p class="blue_p bold_p">About:</p>
+				
+		<p class="blue_p bold_p">Venue Images</p>
 		<a href="#"><img src="http://www.bimboosoft.com/DMT/images/play1.jpg" alt="Smiley face" height="50" width="50"></a>
 		<a href="#"><img src="http://www.bimboosoft.com/DMT/images/play1.jpg" alt="Smiley face" height="50" width="50"></a>
 		<a href="#"><img src="http://www.bimboosoft.com/DMT/images/play1.jpg" alt="Smiley face" height="50" width="50"></a>

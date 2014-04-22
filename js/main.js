@@ -42,6 +42,18 @@ function showsearch(game_type,location)
 	searchvenue(game_type,location);
 }
 
+function searchvenue(game_type , location)
+{
+	page_load();
+	
+	$.get('searchpage.php?search' , {sports_type : game_type, location : location} , 
+	function(data) {
+			$('#search_results').html(data);
+			$('#game_type_input').val(game_type);
+			$('#location_input').val(location);
+		});
+}
+
 function showbookings()
 {
 	page_load();
@@ -310,19 +322,6 @@ function setwindowlocation(input)
 			break;
 	}
 }
-
-function searchvenue(game_type , location)
-{
-	page_load();
-	
-	$.get('searchpage.php?search' , {sports_type : game_type, location : location} , 
-	function(data) {
-			$('#search_results').html(data);
-			$('#game_type_input').val(game_type);
-			$('#location_input').val(location);
-		});
-}
-
 
 // Page load
 

@@ -88,6 +88,9 @@ else{
 		<input id="venue_dayoff" type="checkbox" name="day_off[]" value="6">Saturday<br>
 		<input id="venue_dayoff" type="checkbox" name="day_off[]" value="7">Sunday<br>
 	</fieldset>
+	<br><br>
+	<label for="about_input">Brief description:</label><br>
+	<textarea id="about_input"></textarea><br><br>
 	<label for="venue_agent_code_input">Agent code: <sup><a href="." id="user_secret_code_a" tabindex="-1">What's this?</a></sup></label><br>
 	<input type="password" id="venue_agent_code_input"><br><br>
 	<input type="submit" value="Save">
