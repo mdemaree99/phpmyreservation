@@ -2,29 +2,9 @@
 
 <div id="header_inner_div"><div id="header_inner_left_div">
 
-<a href=".">Home</a> | <a href="#about">About</a>
-
-<?php
-
-if(isset($_SESSION['logged_in']))
-{
-	echo ' | <a href="#help">Help</a>';
-}
-
-?>
+<a href=".">Home</a> | <a href="#bookings">Booking Information</a>
 
 </div><div id="header_inner_center_div">
-
-
-
-<?php
-/*
-if(isset($_SESSION['logged_in']))
-{
-	echo '<b>Week ' . global_week_number . ' - ' . global_day_name . ' ' . date('jS F Y') . '</b>';
-}
-*/
-?>
 
 </div><div id="header_inner_right_div">
 
@@ -32,7 +12,16 @@ if(isset($_SESSION['logged_in']))
 
 if(isset($_SESSION['logged_in']))
 {
-	echo '<a href="#dashboard">Dashboard</a> | <a href="#cp">Control panel</a> | <a href="#logout">Logout</a>';
+	if(isset($_SESSION['logged_in_as_playground']))
+	{
+		echo '<a href="#dashboard">Dashboard</a>';
+	}
+	else
+	{
+		echo '<a href="#cp">Control panel</a>';
+	}
+	
+	echo ' | <a href="#logout">Logout</a>';
 }
 else
 {

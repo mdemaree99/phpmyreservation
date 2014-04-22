@@ -85,12 +85,12 @@ elseif(isset($_GET['week']))
 	{
 		echo '<tr><th class="reservation_time_th">' . $time . '</th>';
 
-		$i = 0;
+		$i = 0; // day_number
 
 		while($i < 7)
 		{
 			$i++;
-
+			
 			echo '<td><div class="reservation_time_div"><div class="reservation_time_cell_div" id="div:' . $week . ':' . $i . ':' . $time . ':' .$venue_id .'" onclick="void(0)">' . read_reservation($venue_id,$week, $i, $time) . '</div></div></td>';
 		}
 
