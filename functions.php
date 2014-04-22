@@ -286,9 +286,19 @@ function highlight_day($day)
 
 function read_reservation($venue_id, $week, $day, $time)
 {
-	$query = mysql_query("SELECT * FROM " . global_mysql_reservations_table . " WHERE reservation_venue_id='$venue_id'  AND reservation_week='$week' AND reservation_day='$day' AND reservation_time='$time'")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
-	$reservation = mysql_fetch_array($query);
-	return($reservation['reservation_user_name']);
+	$day_off = get_venue_attribute('day_off', $venue_id);
+	
+	//Check day offs
+	$pos = strpos($day_off,(string)$day);
+			
+	if($pos === false)
+	{
+		$query = mysql_query("SELECT * FROM " . global_mysql_reservations_table . " WHERE reservation_venue_id='$venue_id'  AND reservation_week='$week' AND reservation_day='$day' AND reservation_time='$time'")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+		$reservation = mysql_fetch_array($query);
+		return($reservation['reservation_user_name']);
+	}
+	
+	return ("No Booking");
 }
 
 function read_reservation_details($venue_id, $week, $day, $time)

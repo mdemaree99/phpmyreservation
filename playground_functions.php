@@ -133,13 +133,13 @@ function create_playground($playground_name, $playground_email, $playground_pass
 
 //Venue functions
 
-function create_or_update_venue($venue_name, $venue_sports_type, $venue_time_slots, $rate_per_time_slot, $venue_location, $venue_contact_number, $venue_id='')
+function create_or_update_venue($venue_name, $venue_sports_type, $venue_time_slots, $rate_per_time_slot, $venue_location, $venue_contact_number,$venue_day_off, $venue_id='')
 {
 	$playground_id = $_SESSION['user_id'];
 	
 	if($venue_id == '')
 	{
-	mysql_query("INSERT INTO " . global_mysql_venues_table . " (name,sports_type,time_slots,rate,location,contact_number,playground_id ) VALUES ('$venue_name', '$venue_sports_type', '$venue_time_slots', '$rate_per_time_slot', '$venue_location', '$venue_contact_number', '$playground_id')")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+	mysql_query("INSERT INTO " . global_mysql_venues_table . " (name,sports_type,time_slots,rate,location,contact_number,day_off,playground_id ) VALUES ('$venue_name', '$venue_sports_type', '$venue_time_slots', '$rate_per_time_slot', '$venue_location', '$venue_contact_number','$venue_day_off', '$playground_id')")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
 	}
 	else
 	{
@@ -220,13 +220,13 @@ function list_playgrounds_and_venues_by_name($name)
 
 function list_venues_by_sports_location( $sports_type , $location)
 {
-	if($sports_type == '' || $location == '' )
+	if($location == '' )
 	{
-		return('<span class="error_span">Empty Search not allowed</span>');
+		return('<span class="error_span">Please enter a location to search</span>');
 	}
 	
 	$query_statement = "SELECT *  FROM " . global_mysql_playgrounds_table . " as playground ," . global_mysql_venues_table . " as venue ";
-	$query_statement .= " WHERE venue.`sports_type` LIKE '%$sports_type%' AND venue.`location` LIKE '%$location%' AND venue.playground_id = playground.playground_id";
+	$query_statement .= " WHERE venue.`sports_type` LIKE '%$sports_type%' AND playground.`locality` LIKE '%$location%' AND venue.playground_id = playground.playground_id";
 	
 	$result = mysql_query($query_statement)or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
 
@@ -247,7 +247,8 @@ function list_venues_by_sports_location( $sports_type , $location)
 
 function list_venue_by_id($id)
 {
-	$query_statement = "SELECT * from " .global_mysql_venues_table. " WHERE id = $id";
+	//$query_statement = "SELECT * from " .global_mysql_venues_table. " WHERE id = $id";
+	$query_statement = "SELECT playground_name,name,sports_type,time_slots,day_off,rate,locality,playground_location,location,contact_number from ". global_mysql_venues_table." as venues,".global_mysql_playgrounds_table. " as playgrounds where id =$id and playgrounds.playground_id = venues.playground_id";
 	
 	$result = mysql_query($query_statement)or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
 	
