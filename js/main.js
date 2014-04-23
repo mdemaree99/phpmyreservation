@@ -230,7 +230,7 @@ function showweek(week, option)
 	
 	if(week < global_week_number)
 	{
-		notify('No one can time travel into the past :(', 10);
+		notify('Sorry , No one can time travel into the past :(', 10);
 		return;
 	}
 	
@@ -763,7 +763,7 @@ function toggle_reservation_time(id, week, day, time, from)
 	
 	if(week < global_week_number || week == global_week_number && day < global_day_number)
 	{
-		notify('You are not allowed to reserve back intime',4);
+		notify('You are not allowed to reserve back in time',4);
 		return;
 	}
 	else if(week > global_week_number + global_weeks_forward)

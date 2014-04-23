@@ -96,11 +96,6 @@ function create_playground($playground_name, $playground_email, $playground_pass
 	{
 		return('<span class="error_span">Wrong secret code</span>');
 	}
-	/*
-	elseif(playground_name_exists($playground_name) == true)
-	{
-		return('<span class="error_span">Name is already in use. If you have the same name as someone else, use another spelling that identifies you</span>');
-	}*/
 	elseif(playground_email_exists($playground_email) == true)
 	{
 		return('<span class="error_span">Email is already registered. <a href="#forgot_password">Forgot your password?</a></span>');
