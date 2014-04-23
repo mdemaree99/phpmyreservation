@@ -227,7 +227,19 @@ function showweek(week, option)
 	{
 		var week = parseInt(week);
 	}
-
+	
+	if(week < global_week_number)
+	{
+		notify('No one can time travel into the past :(', 10);
+		return;
+	}
+	
+	if(week > (global_week_number+global_weeks_forward))
+	{
+		notify('You cannot book beyond '+global_weeks_forward+' weeks', 10);
+		return;
+	}
+	
 	if(isNaN(week))
 	{
 		notify('Invalid week number', 4);
@@ -743,6 +755,12 @@ function toggle_reservation_time(id, week, day, time, from)
 {
 	venue_id = window.venue_id;
 	
+	if($(id).html() == "Booked")
+	{
+		notify('The slot is already booked',4);
+		return;
+	}
+	
 	if(week < global_week_number || week == global_week_number && day < global_day_number)
 	{
 		notify('You are not allowed to reserve back intime',4);
@@ -773,13 +791,15 @@ function read_reservation(id, week, day, time)
 
 function read_reservation_details(id, week, day, time)
 {
-	venue_id = window.venue_id;
+	//Todo : show this only if venue belongs to playground
+	//Remove code segment below, to enable this
+	$('div#reservation_details_div').fadeOut('fast');
+	return;
+	//
 	
-	if($(id).html() == 'Selected')
-	{
-		$('#reservation_details_div').html("You have selected this slot temporarily");
-	}		
-	else if(typeof id != 'undefined' && $(id).html() != '' && $(id).html() != 'Wait...')
+	venue_id = window.venue_id;
+			
+	if(typeof id != 'undefined' && $(id).html() != '' && $(id).html() != 'Wait...')
 	{
 		if($('#reservation_details_div').is(':hidden'))
 		{
@@ -791,46 +811,11 @@ function read_reservation_details(id, week, day, time)
 			$('#reservation_details_div').css('top', top+'px').css('left', left+'px');
 			$('#reservation_details_div').fadeIn('fast');
 
-			reservation_details_id = id;
-			reservation_details_week = week;
-			reservation_details_day = day;
-			reservation_details_time = time;
-
 			$.post('reservation.php?read_reservation_details', { venue_id: venue_id, week: week, day: day, time: time }, function(data)
 			{
 				setTimeout(function()
 				{
-					if(data == 0)
-					{
-						$('#reservation_details_div').html('This reservation no longer exists. Wait...');
-						
-						setTimeout(function()
-						{
-							if($('#reservation_details_div').is(':visible') && $('#reservation_details_div').html() == 'This reservation no longer exists. Wait...')
-							{
-								read_reservation(reservation_details_id, reservation_details_week, reservation_details_day, reservation_details_time);
-								read_reservation_details();
-							}
-						}, 2000);
-					}
-					else
-					{
-						$('#reservation_details_div').html(data);
-
-						if(offclick_event == 'touchend')
-						{
-							if($(reservation_details_id).html() == session_user_name || session_user_is_admin == '1')
-							{
-								var delete_link_html = '<a href="." onclick="toggle_reservation_time(reservation_details_id, reservation_details_week, reservation_details_day, reservation_details_time, \'details\'); return false">Delete</a> | ';
-							}
-							else
-							{
-								var delete_link_html = '';
-							}
-
-							$('#reservation_details_div').append('<br><br>'+delete_link_html+'<a href="." onclick="read_reservation_details(); return false">Close this</a>');
-						}
-					}
+					$('#reservation_details_div').html(data);
 				}, 500);
 			});
 		}

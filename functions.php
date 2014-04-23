@@ -293,23 +293,43 @@ function read_reservation($venue_id, $week, $day, $time)
 			
 	if($pos === false)
 	{
+	//If booking allowed for that day
 		$query = mysql_query("SELECT * FROM " . global_mysql_reservations_table . " WHERE reservation_venue_id='$venue_id'  AND reservation_week='$week' AND reservation_day='$day' AND reservation_time='$time'")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
 		$reservation = mysql_fetch_array($query);
-		return($reservation['reservation_user_name']);
+		if(!empty($reservation))
+		{
+			//return($reservation['reservation_user_name']);
+			return("Booked");
+		}
+		else
+		{
+			return "";
+		}
 	}
 	
+	//If booking not allowed for that day
 	return ("No Booking");
 }
 
 function read_reservation_details($venue_id, $week, $day, $time)
 {
+	//Allow this only for the owner of the venue
+	if( !isset($_SESSION['logged_in_as_playground']) )
+	{
+		return 0;
+	}
+	$playground_id = $_SESSION['user_id'];
+	if($playground_id  != get_venue_attribute('playground_id', $venue_id))
+	{
+		return 0;
+	}
+	
 	$query = mysql_query("SELECT * FROM " . global_mysql_reservations_table . " WHERE reservation_venue_id='$venue_id'  AND reservation_week='$week' AND reservation_day='$day' AND reservation_time='$time'")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
 	$reservation = mysql_fetch_array($query);
 
 	if(empty($reservation))
 	{
-		return(0);
-		
+		return(0);	
 	}
 	else
 	{
@@ -322,8 +342,17 @@ function make_reservation($venue_id, $week, $day, $time)
 	$user_id = $_SESSION['user_id'];
 	$user_email = $_SESSION['user_email'];
 	$user_name = $_SESSION['user_name'];
-	//Get price from the venue details
-	$price = get_venue_attribute('rate',$venue_id);
+	
+	//Check if day is allowed at venue
+	$day_off = get_venue_attribute('day_off', $venue_id);
+	
+	//Check day offs
+	$pos = strpos($day_off,(string)$day);
+			
+	if($pos === false)
+	{
+		return('This day is not available at the venue');
+	}
 	
 	//Check if time it is allowed at the venue
 	$time_slots = get_venue_attribute('time_slots',$venue_id);
@@ -333,6 +362,9 @@ function make_reservation($venue_id, $week, $day, $time)
 	{
 		return('This time slot is not available at the venue');
 	}
+	
+	//Get price from the venue details
+	$price = get_venue_attribute('rate',$venue_id);
 	
 	if($week == '0' && $day == '0' && $time == '0')
 	{

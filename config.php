@@ -49,7 +49,7 @@ define('global_url', 'http://your.server/phpmyreservation/');
 define('global_currency', 'Rs');
 
 // How many weeks forward in time to allow reservations
-define('global_weeks_forward', '2');
+define('global_weeks_forward', '4');
 
 // Possible reservation times. Use the same syntax as below (TimeFrom-TimeTo)
 $global_times = array('09-10', '10-11', '11-12', '12-13', '13-14', '14-15', '15-16', '16-17', '17-18', '18-19', '19-20', '20-21');
