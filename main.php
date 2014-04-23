@@ -9,8 +9,7 @@ define('global_project_website', 'localhost');
 // Include necessary files
 
 include_once('config.php');
-include_once('functions.php');
-include_once('playground_functions.php');
+include_once('corelogic/_includes.php');
 
 // MySQL
 
