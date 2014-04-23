@@ -386,8 +386,8 @@ function set_booking_div_content()
 		day = parseInt(bookings[i].day);
 		day_number = (week -1)*7 + day + shift;
 		date = new Date(global_year ,0,day_number);
-		result += "<li>";
-		result += "  " + moment(date).format( "DD-MMM-YYYY") ;
+		result += "<li><b><i>";
+		result += "  " + moment(date).format( "DD-MMM-YYYY")+"</i></b>" ;
 		result += " , " + bookings[i].time;
 		result += " at " + '"' + bookings[i].venue_name + '"';
 		result += " for Rs " + bookings[i].price;
