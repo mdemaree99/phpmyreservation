@@ -1,8 +1,43 @@
 <?php
 include_once('_includes.php');
 
+//Get attribute functions
 
-// Playground validation
+function get_venue_attribute($attribute , $venue_id)
+{
+	$query_statement = "SELECT $attribute from " .global_mysql_venues_table. " WHERE id = $venue_id";
+	
+	$result = mysql_query($query_statement)or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+	
+	if(mysql_num_rows($result) < 1)
+	{
+		return('<span class="error_span">No results obtained please modify your search query</span>');
+	}
+	
+	$venue = mysql_fetch_array($result);
+	
+	return $venue[$attribute];
+}
+
+function get_playground_attribute($attribute , $venue_id)
+{
+	$query_statement = "SELECT $attribute from " .global_mysql_playgrounds_table. " WHERE id = $venue_id";
+	
+	$result = mysql_query($query_statement)or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+	
+	if(mysql_num_rows($result) < 1)
+	{
+		return('<span class="error_span">No results obtained please modify your search query</span>');
+	}
+	
+	$venue = mysql_fetch_array($result);
+	
+	return $venue[$attribute];
+}
+
+
+
+// Playground functions
 
 function playground_email_exists($playground_email)
 {
@@ -13,8 +48,6 @@ function playground_email_exists($playground_email)
 		return(true);
 	}
 }
-
-// Playground Login
 
 function get_playground_login_data($data)
 {
@@ -127,6 +160,23 @@ function create_playground($playground_name, $playground_email, $playground_pass
 
 		return(1);
 	}
+}
+
+function list_playground_by_id ($id)
+{
+	//return playground info
+	$query_statement = "SELECT * from " .global_mysql_playgrounds_table. " WHERE playground_id = $id";
+	
+	$result = mysql_query($query_statement)or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+	
+	if(mysql_num_rows($result) < 1)
+	{
+		return('<span class="error_span">No results obtained please modify your search query</span>');
+	}
+	
+	$venue = mysql_fetch_array($result);
+	
+	return $venue;
 }
 
 //Venue functions
@@ -260,21 +310,6 @@ function list_venue_by_id($id)
 	return $venue;
 }
 
-function get_venue_attribute($attribute , $venue_id)
-{
-	$query_statement = "SELECT $attribute from " .global_mysql_venues_table. " WHERE id = $venue_id";
-	
-	$result = mysql_query($query_statement)or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
-	
-	if(mysql_num_rows($result) < 1)
-	{
-		return('<span class="error_span">No results obtained please modify your search query</span>');
-	}
-	
-	$venue = mysql_fetch_array($result);
-	
-	return $venue[$attribute];
-}
 
 // Reservations
 
@@ -345,20 +380,22 @@ function make_reservation($venue_id, $week, $day, $time)
 	$user_name = $_SESSION['user_name'];
 	
 	//Check if day is allowed at venue
-	$day_off = get_venue_attribute('day_off', $venue_id);
 	
+	//get day off
+	$day_off = get_venue_attribute('day_off', $venue_id);
 	//Check day offs
 	$pos = strpos($day_off,(string)$day);
-			
-	if($pos === false)
+	if($pos !== false)
 	{
 		return('This day is not available at the venue');
 	}
 	
 	//Check if time it is allowed at the venue
-	$time_slots = get_venue_attribute('time_slots',$venue_id);
-	$pos = strpos($time_slots, $time);
 	
+	//get time slots
+	$time_slots = get_venue_attribute('time_slots',$venue_id);
+	//check time slot
+	$pos = strpos($time_slots, $time);
 	if($pos === false)
 	{
 		return('This time slot is not available at the venue');

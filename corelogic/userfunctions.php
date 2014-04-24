@@ -2,6 +2,7 @@
 include_once('_includes.php');
 
 
+
 // Configuration
 
 function get_configuration($data)
@@ -11,6 +12,23 @@ function get_configuration($data)
 	return($configuration[$data]);
 }
 
+// Get attribute function
+
+function get_user_attribute($attribute , $venue_id)
+{
+	$query_statement = "SELECT $attribute from " .global_mysql_users_table. " WHERE id = $venue_id";
+	
+	$result = mysql_query($query_statement)or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+	
+	if(mysql_num_rows($result) < 1)
+	{
+		return('<span class="error_span">No results obtained please modify your search query</span>');
+	}
+	
+	$venue = mysql_fetch_array($result);
+	
+	return $venue[$attribute];
+}
 
 // User validation
 
