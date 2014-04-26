@@ -1259,7 +1259,7 @@ $(document).ready( function()
 	$(document).on('click', '#delete_all_users_button', function() { delete_all('users'); });
 	$(document).on('click', '#delete_everything_button', function() { delete_all('everything'); });
 	$(document).on('click', '#add_one_reservation_button', function() { add_one_reservation(); });
-	$(document).on('click', '#clear_booking_button', function() { window.localStorage.bookings = ""; show_hide_booking_div(); });
+	$(document).on('click', '#clear_booking_button', function() { window.localStorage.bookings = ""; show_hide_booking_div(); location.reload();});
 	
 
 	// Checkboxes
