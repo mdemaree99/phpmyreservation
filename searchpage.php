@@ -32,15 +32,15 @@ else if(isset($_GET['search']))
 ?>
 <div class="flat_box_div centred_div">
 	<div class="flat_box_body_div ">
-		<h3><a href="<?php echo "?venue=$venue[id]" ?>"><?php echo $venue['playground_name']. "," .$venue['name'] ?></a></h3>
-		<span class="soft"><?php echo $venue['sports_type']; ?></span>
+		<h3><a href="<?php echo "?venue=$venue[Venue_id]" ?>"><?php echo $venue['Venue_playground_name']. "," .$venue['Venue_name'] ?></a></h3>
+		<span class="soft"><?php echo $venue['Venue_sports_type']; ?></span>
 		<br/>
-		<?php echo $venue['locality']; ?> > <span class="soft"><?php echo $venue['playground_location'] ?></span>
+		<?php echo $venue['Venue_playground_locality']; ?> > <span class="soft"><?php echo $venue['Venue_playground_address'] ?></span>
 		<br/>
-		<span class="soft">Time slots : <?php echo $venue['time_slots'] ?></span>
+		<span class="soft">Time slots : <?php echo $venue['Venue_time_slots'] ?></span>
 		<br/>
-		<span class="soft">Rate : </span><?php echo $venue['rate'] ?> per slot
-		<span class="soft">Contact : <?php echo $venue['contact_number'] ?></span>
+		<span class="soft">Rate : </span><?php echo $venue['Venue_rate_per_time_slot'] ?> per slot
+		<span class="soft">Contact : <?php echo $venue['Venue_contact_number'] ?></span>
 		<br/>
 		<a href="">Reviews</a> | <a href="">Reservations</a>
 	</div>	

@@ -41,7 +41,7 @@ elseif(isset($_GET['week']))
 	$week = $_GET['week'];
 	$venue_id = $_GET['venue_id'];
 	
-	$venue_times = explode(';',get_venue_attribute('time_slots', $venue_id));
+	$venue_times = explode(';', $_SESSION['Venue_time_slots']);
 
 	echo '<table id="reservation_table"><colgroup span="1" id="reservation_time_colgroup"></colgroup><colgroup span="7" id="reservation_day_colgroup"></colgroup>';
 

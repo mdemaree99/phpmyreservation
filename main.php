@@ -31,10 +31,6 @@ define('global_cookie_prefix', 'phpmyreservation');
 
 session_start();
 
-// Configuration
-
-define('global_price', get_configuration('price'));
-
 // Date
 
 define('global_year', date('Y'));
@@ -42,6 +38,8 @@ define('global_week_number', ltrim(date('W'), '0'));
 define('global_day_number', date('N'));
 define('global_day_name', date('l'));
 define('global_date',date('d-M-y'));
+
+date_default_timezone_set(global_time_zone);
 
 // User agent
 
@@ -82,7 +80,7 @@ if(strlen(global_salt) != 9)
 }
 
 if(isset($_GET['day_number']))
-{
+{	
 	echo date('N');
 }
 elseif(isset($_GET['latest_version']))

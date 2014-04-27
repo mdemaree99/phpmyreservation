@@ -28,20 +28,20 @@
 
 	<div class="box_div fat_centred_div">
 	<div class="search_box_body_div ">
-		<h2><?php echo $venue['name'].','.$venue['playground_name'] ?></h2>
+		<h2><?php echo $venue['Venue_name'].','.$venue['Venue_playground_name'] ?></h2>
 		<hr/>
 		<table>
 			<tr>
-			<td><b>Address : </b></td><td><?php echo $venue['locality'].','.$venue['playground_location'] ?></td>
+			<td><b>Address : </b></td><td><?php echo $venue['Venue_location'].','.$venue['Venue_playground_address'] ?></td>
 			</tr>
 			<tr>
-			<td><b>Time slots : </b></td><td><?php echo $venue['time_slots'] ?></td>
+			<td><b>Time slots : </b></td><td><?php echo $venue['Venue_time_slots'] ?></td>
 			</tr>
 			<tr>
-			<td><b>Rate : </b></td><td><?php echo $venue['rate'] ?> per slot</td>
+			<td><b>Rate : </b></td><td><?php echo $venue['Venue_rate_per_time_slot'] ?> per slot</td>
 			</tr>
 			<tr>
-			<td><b>Contact Number: </b></td><td><?php echo $venue['contact_number'] ?></td>
+			<td><b>Contact Number: </b></td><td><?php echo $venue['Venue_contact_number'] ?></td>
 			</tr>
 		</table>
 		<hr/>

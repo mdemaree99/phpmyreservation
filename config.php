@@ -7,6 +7,7 @@ define('global_mysql_server', 'localhost');
 define('global_mysql_user', 'demo');
 define('global_mysql_password', '');
 define('global_mysql_database', 'test');
+define('global_mongodb_database', 'mongodb://admin:admin@ds043987.mongolab.com:43987/playgroundreservation');
 
 // Salt for password encryption. Changing it is recommended. Use 9 random characters
 // This MUST be 9 characters, and must NOT be changed after users have been created
@@ -50,6 +51,9 @@ define('global_currency', 'Rs');
 
 // How many weeks forward in time to allow reservations
 define('global_weeks_forward', '4');
+
+//Global time zone
+define('global_time_zone' , 'Asia/Kolkata');
 
 // Possible reservation times. Use the same syntax as below (TimeFrom-TimeTo)
 $global_times = array('09-10', '10-11', '11-12', '12-13', '13-14', '14-15', '15-16', '16-17', '17-18', '18-19', '19-20', '20-21');

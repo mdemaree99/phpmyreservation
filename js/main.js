@@ -447,8 +447,8 @@ function page_loaded(page)
 	{
 		if(data != global_day_number)
 		{
-			notify('Day have changed. Refreshing...', '300');
-			setTimeout(function() { window.location.replace('.'); }, 2000);
+			//notify('Day have changed. Refreshing...', '300');
+			//setTimeout(function() { window.location.replace('.'); }, 2000);
 		}
 	});
 
@@ -1422,7 +1422,7 @@ $(window).load(function()
 
 $(document).ready( function()
 {
-	$.ajaxSetup({ cache: true });
+	$.ajaxSetup({ cache: false });
 });
 
 //Utility
