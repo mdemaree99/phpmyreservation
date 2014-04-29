@@ -198,12 +198,6 @@ function create_or_update_venue($venue_name, $venue_sports_type, $venue_time_slo
 	return 1;
 }
 
-function delete_venue_data($venue_id , $data)
-{
-	//Todo
-	return(1);
-}
-
 function list_venues($playground_id = '')
 {
 	global $playgrounds;
@@ -404,7 +398,13 @@ function prepare_reservation_chart_week($week)
 	//for each $cursor fill the $chart matrix	: O(time_slots * 7) = O(time_slots)
 	foreach($cursor as $reservation)
 	{
-		$chart[$reservation['Reservation_time']][$reservation['Reservation_day']] = "Booked" ;
+		if(array_key_exists('Reservation_is_temporary' ,$reservation) )
+		{
+			$chart[$reservation['Reservation_time']][$reservation['Reservation_day']] = "On Hold";
+		}else
+		{
+			$chart[$reservation['Reservation_time']][$reservation['Reservation_day']] = "Booked" ;
+		}
 	}
 	
 	
@@ -477,16 +477,14 @@ function read_reservation_details($venue_id, $week, $day, $time)
 	*/
 }
 
-function make_reservation($venue_id, $week, $day, $time)
-{
-	$user_id = $_SESSION['user_id'];
-	$user_email = $_SESSION['user_email'];
-	$user_name = $_SESSION['user_name'];
+function make_temporary_reservation($venue_id, $week, $day, $time ,$user_name, $user_email, $user_phone, $user_id = '')
+{	
+	global $reservations;
 	
 	//Check if day is allowed at venue
 	
 	//get day off
-	$day_off = $_SESSION['venue'][''];
+	$day_off = get_venue_attribute('Venue_day_off',$venue_id);
 	//Check day offs
 	$pos = strpos($day_off,(string)$day);
 	if($pos !== false)
@@ -497,7 +495,7 @@ function make_reservation($venue_id, $week, $day, $time)
 	//Check if time it is allowed at the venue
 	
 	//get time slots
-	$time_slots = get_venue_attribute('time_slots',$venue_id);
+	$time_slots = get_venue_attribute('Venue_time_slots',$venue_id);
 	//check time slot
 	$pos = strpos($time_slots, $time);
 	if($pos === false)
@@ -508,69 +506,71 @@ function make_reservation($venue_id, $week, $day, $time)
 	//Get price from the venue details
 	$price = get_venue_attribute('rate',$venue_id);
 	
-	if($week == '0' && $day == '0' && $time == '0')
-	{
-		//Currently not allowing this
-		return('You can\'t register a booking like this');
-		/*
-		mysql_query("INSERT INTO " . global_mysql_reservations_table . " (reservation_venue_id,reservation_made_time,reservation_week,reservation_day,reservation_time,reservation_price,reservation_user_id,reservation_user_email,reservation_user_name) VALUES ('$venue_id',now(),'$week','$day','$time','$price','$user_id','$user_email','$user_name')")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
-
-		return(1);
-		*/
-	}
-	elseif($week < global_week_number && $_SESSION['user_is_admin'] != '1' || $week == global_week_number && $day < global_day_number && $_SESSION['user_is_admin'] != '1')
+	if($week < global_week_number || $week == global_week_number && $day < global_day_number )
 	{
 		return('You can\'t reserve back in time');
 	}
-	elseif($week > global_week_number + global_weeks_forward && $_SESSION['user_is_admin'] != '1')
+	elseif($week > global_week_number + global_weeks_forward)
 	{
 		return('You can only reserve ' . global_weeks_forward . ' weeks forward in time');
 	}
 	else
 	{
-		$query = mysql_query("SELECT * FROM " . global_mysql_reservations_table . " WHERE reservation_venue_id = '$venue_id' AND reservation_week='$week' AND reservation_day='$day' AND reservation_time='$time'")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
+		//Try inserting a new reservation
+		$reservation = array(
+			"Reservation_venue_id" => $venue_id, 
+			"Reservation_week" => $week,
+			"Reservation_day" =>  $day, 
+			"Reservation_time" => $time,
+			"Reservation_rate" => get_venue_attribute('Venue_rate_per_time_slot',$venue_id),
+			"Reservation_user_email" => $user_email,
+			"Reservation_user_phone" => $user_phone,
+			"Reservation_user_name" => $user_name,
+			"Reservation_user_id" => $user_id,
+			"Reservation_is_temporary" => 'true'
+		);
 
-		if(mysql_num_rows($query) < 1)
+		try
 		{
-			$year = global_year;
-
-			mysql_query("INSERT INTO " . global_mysql_reservations_table . " (reservation_venue_id,reservation_made_time,reservation_year,reservation_week,reservation_day,reservation_time,reservation_price,reservation_user_id,reservation_user_email,reservation_user_name) VALUES ('$venue_id',now(),'$year','$week','$day','$time','$price','$user_id','$user_email','$user_name')")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
-
-			return(1);
+			$reservations->insert($reservation);
+			return "Booked successfully";
 		}
-		else
+		catch(MongoDuplicateKeyException $e)
 		{
-			return('Someone else just reserved this time');
+			echo $e->getMessage();
+			return('Someone else just reserved this slot');
 		}
 	}
 }
 
+function confirm_reservation($venue_id, $week, $day, $time)
+{
+	global $reservations;
+	
+	$query = array(
+			"Reservation_venue_id" => $venue_id, 
+			"Reservation_week" => $week,
+			"Reservation_day" =>  $day, 
+			"Reservation_time" => $time
+			);
+	
+	$reservations->update($query , array(
+					'$unset' => array('Reservation_is_temporary' => '')
+					));
+}
+
 function delete_reservation($venue_id, $week, $day, $time)
 {
-	if($week < global_week_number && $_SESSION['user_is_admin'] != '1' || $week == global_week_number && $day < global_day_number && $_SESSION['user_is_admin'] != '1')
-	{
-		return('You can\'t reserve back in time');
-	}
-	elseif($week > global_week_number + global_weeks_forward && $_SESSION['user_is_admin'] != '1')
-	{
-		return('You can only reserve ' . global_weeks_forward . ' weeks forward in time');
-	}
-	else
-	{
-		$query = mysql_query("SELECT * FROM " . global_mysql_reservations_table . " WHERE  reservation_venue_id = '$venue_id' AND reservation_week='$week' AND reservation_day='$day' AND reservation_time='$time'")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
-		$user = mysql_fetch_array($query);
-
-		if($user['reservation_user_id'] == $_SESSION['user_id'] || $_SESSION['user_is_admin'] == '1')
-		{
-			mysql_query("DELETE FROM " . global_mysql_reservations_table . " WHERE  reservation_venue_id = '$venue_id' AND reservation_week='$week' AND reservation_day='$day' AND reservation_time='$time'")or die('<span class="error_span"><u>MySQL error:</u> ' . htmlspecialchars(mysql_error()) . '</span>');
-
-			return(1);
-		}
-		else
-		{
-			return('You can\'t remove other users\' reservations');
-		}
-	}
+	global $reservations;
+	
+	$query = array(
+			"Reservation_venue_id" => $venue_id, 
+			"Reservation_week" => $week,
+			"Reservation_day" =>  $day, 
+			"Reservation_time" => $time
+			);
+	
+	$reservations->remove($query);
 }
 
 ?>
