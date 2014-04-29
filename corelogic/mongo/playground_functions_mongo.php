@@ -295,18 +295,41 @@ function list_venue_by_id($id)
 {
 	global $playgrounds;
 	
-	$playground = $playgrounds->findOne(array('Playground_venues.Venue_id' => $id) , array('Playground_Reservations' => false) );
+	$playgroundprojection = array( 
+							'Playground_name' => true,
+							'Playground_locality' => true,
+							'Playground_address' => true,
+							'Playground_venues' => array(
+													'$elemMatch' => array(
+																'Venue_id' => $id
+																		) 
+														),
+							'Playground_reservations' => array(
+															'$elemMatch' => array(
+																				'Reservation_venue_id' => $id
+																				) 
+																) 
+								);
+	
+	$playground = $playgrounds->findOne(array('Playground_venues.Venue_id' => $id) , $playgroundprojection);
 	
 	$venue = $playground['Playground_venues'][0];
 	$venue['Venue_playground_name'] = $playground['Playground_name'] ;
 	$venue['Venue_playground_locality'] = $playground['Playground_locality'] ;
 	$venue['Venue_playground_address'] = $playground['Playground_address'] ;
 	
-	$_SESSION['Venue_time_slots'] = $venue['Venue_time_slots'];
-	$_SESSION['Venue_day_off'] = $venue['Venue_day_off'];
+	$venue['Venue_reservations'] = array();
+	
+	foreach($playground['Playground_reservations'] as $reservation)
+	{
+		array_push($venue['Venue_reservations'] , $reservation);
+	}
+	
+	$_SESSION['venue'] = $venue; 
 	
 	return($venue);
 }
+
 
 
 // Reservations
@@ -317,28 +340,120 @@ function highlight_day($day)
 	return $day;
 }
 
-
 function read_reservation($venue_id, $week, $day, $time)
 {
-	//Todo :
-	$day_off = $_SESSION['Venue_day_off'];
+	$day_off = $_SESSION['venue']['Venue_day_off'];
 	
 	//Check day offs
 	$pos = strpos($day_off,(string)$day);
 			
-	if($pos === false)
+	if($pos !== false)
 	{
-	//If booking allowed for that day
-		return "";
+		//If booking not allowed for that day
+		return ("Booking not allowed");
 	}
 	
-	//If booking not allowed for that day
-	return ("No Booking");
+	//If booking allowed for that day , search if already booked
+	$reservations = $_SESSION['venue']['Venue_reservations'];
+	
+	foreach($reservations as $reservation)
+	{
+		if($reservation['Reservation_week'] == $week && $reservation['Reservation_day'] == $day && $reservation['Reservation_time'] == $time)
+		{
+			return "Booked";
+		}
+	}
+	
+	return "";
 }
+
+function prepare_reservation_chart_week($week)
+{
+	//For each week prepare chart
+	
+	$venue_times = explode(';', $_SESSION['venue']['Venue_time_slots']);
+	$day_off = $_SESSION['venue']['Venue_day_off'];
+	
+	
+	//Fill the chart with blank values : O(time_slots * 7) = O(time_slots)
+	$chart = array();
+	foreach($venue_times as $time)
+	{
+		$chart[$time] = array();
+		for($i=1;$i<=7;$i++)
+		{
+			//Check day offs
+			$pos = strpos($day_off,(string)$i);
+					
+			if($pos !== false)
+			{
+				//If booking not allowed for that day
+				$chart[$time][$i] = "Booking not allowed";
+			}
+			else
+			{
+				$chart[$time][$i] = "";
+			}
+		}
+	}
+	
+	//Get reservations for that week
+	
+	
+	//Fill the chart with the reservations : O(reservations_per_week) = O(time_slots*7) at max = O(time_slots)
+	foreach($_SESSION['venue']['Venue_reservations'] as $reservation)
+	{
+		if($reservation['Reservation_week'] == $week)
+		{
+			$chart[$reservation['Reservation_time']][$reservation['Reservation_day']] = "Booked" ;
+		}
+	}
+	
+	return $chart;
+	
+	//Total running time : O(time_slots)
+}
+
+function read_reservation_from_database($venue_id, $week, $day, $time)
+{
+	$day_off = $_SESSION['venue']['Venue_day_off'];
+	
+	//Check day offs
+	$pos = strpos($day_off,(string)$day);
+			
+	if($pos !== false)
+	{
+		//If booking not allowed for that day
+		return ("Booking not allowed");
+	}
+	
+	//If booking allowed for that day , search if already booked
+	
+	
+	global $playgrounds;
+	
+	$count = $playgrounds->count(
+				array(
+					'Playground_reservations.Reservation_venue_id' => $venue_id ,
+					'Playground_reservations.Reservation_week' => $week  ,
+					'Playground_reservations.Reservation_day' => $day ,
+					'Playground_reservations.Reservation_time' => $time
+					) 
+				);
+	
+	if($count > 0)
+	{
+		return "Booked";
+	}
+		
+	return "";
+}
+
 
 function read_reservation_details($venue_id, $week, $day, $time)
 {
 	//Allow this only for the owner of the venue
+	/*
 	if( !isset($_SESSION['logged_in_as_playground']) )
 	{
 		return 0;
@@ -360,6 +475,7 @@ function read_reservation_details($venue_id, $week, $day, $time)
 	{
 		return('<b>Reservation made:</b> ' . $reservation['reservation_made_time'] . '<br><b>User\'s email:</b> ' . $reservation['reservation_user_email']);
 	}
+	*/
 }
 
 function make_reservation($venue_id, $week, $day, $time)
@@ -371,7 +487,7 @@ function make_reservation($venue_id, $week, $day, $time)
 	//Check if day is allowed at venue
 	
 	//get day off
-	$day_off = get_venue_attribute('day_off', $venue_id);
+	$day_off = $_SESSION['venue'][''];
 	//Check day offs
 	$pos = strpos($day_off,(string)$day);
 	if($pos !== false)
