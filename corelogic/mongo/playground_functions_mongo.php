@@ -302,6 +302,11 @@ function list_venue_by_id($id)
 	
 	$playground = $playgrounds->findOne(array('Playground_venues.Venue_id' => $id) , $playgroundprojection);
 	
+	if(empty($playground))
+	{
+		return array();
+	}
+	
 	$venue = $playground['Playground_venues'][0];
 	$venue['Venue_playground_name'] = $playground['Playground_name'] ;
 	$venue['Venue_playground_locality'] = $playground['Playground_locality'] ;

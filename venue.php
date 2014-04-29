@@ -1,16 +1,11 @@
 <?php
  include_once 'main.php';
  
- if(isset($_GET['getprice']))
+ if(isset($_GET['getattribute']))
  {
 	$id = mysql_real_escape_string($_GET['id']);
-	echo get_venue_attribute('rate',$id);
-	return;
- }
- if(isset($_GET['getname']))
- {
-	$id = mysql_real_escape_string($_GET['id']);
-	echo get_venue_attribute('name',$id);
+	$attribute = mysql_real_escape_string($_GET['attribute']);
+	echo get_venue_attribute($attribute,$id);
 	return;
  }
  else if(isset($_GET['id']))
@@ -18,7 +13,7 @@
 	$id = mysql_real_escape_string($_GET['id']);
 	$venue = list_venue_by_id($id);
 	
-	if(!is_array($venue))
+	if(empty($venue))
 	{
 	 echo '<span class="error_span">No results obtained please modify your search query</span>';
 	 return;

@@ -193,7 +193,7 @@ function showvenue(id)
 		page_loaded(); 		
 	});
 	
-	$.get('venue.php?getname',{id : id} , 
+	$.get('venue.php?getattribute',{attribute: 'Venue_name', id : id} , 
 	function(data) 
 	{ 
 		window.sessionStorage.venue_name = data;		
@@ -755,9 +755,13 @@ function toggle_reservation_time(id, week, day, time, from)
 {
 	venue_id = window.venue_id;
 	
-	if($(id).html() == "Booked")
+	if($(id).html() == "" || $(id).html() == "Selected")
 	{
-		notify('The slot is already booked',4);
+		//Let it pass
+	}else
+	{
+		$(id).disable();
+		//notify('The slot is already booked',4);
 		return;
 	}
 	
@@ -772,7 +776,8 @@ function toggle_reservation_time(id, week, day, time, from)
 		return;
 	}
 
-	$.get('venue.php?getprice', { id: venue_id }, function(data) 
+	$(id).css("background-color" , "yellow");
+	$.get('venue.php?getattribute', { attribute:'Venue_rate_per_time_slot' ,id: venue_id }, function(data) 
 	{
 		price = data;
 		if( !isNaN(price) )
