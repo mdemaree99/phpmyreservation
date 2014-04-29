@@ -3,6 +3,7 @@ include_once('_includes.php');
 
 
 $playgrounds = $db->Playgrounds;
+$reservations = $db->Reservations;
 
 //Create functions
 
@@ -246,7 +247,6 @@ function list_venues($playground_id = '')
 function list_playgrounds_and_venues_by_name($name)
 {
 	//Todo
-
 }
 
 function list_venues_by_sports_location( $sports_type , $location)
@@ -303,12 +303,7 @@ function list_venue_by_id($id)
 													'$elemMatch' => array(
 																'Venue_id' => $id
 																		) 
-														),
-							'Playground_reservations' => array(
-															'$elemMatch' => array(
-																				'Reservation_venue_id' => $id
-																				) 
-																) 
+														)
 								);
 	
 	$playground = $playgrounds->findOne(array('Playground_venues.Venue_id' => $id) , $playgroundprojection);
@@ -318,12 +313,12 @@ function list_venue_by_id($id)
 	$venue['Venue_playground_locality'] = $playground['Playground_locality'] ;
 	$venue['Venue_playground_address'] = $playground['Playground_address'] ;
 	
-	$venue['Venue_reservations'] = array();
+	/* $venue['Venue_reservations'] = array();
 	
 	foreach($playground['Playground_reservations'] as $reservation)
 	{
 		array_push($venue['Venue_reservations'] , $reservation);
-	}
+	} */
 	
 	$_SESSION['venue'] = $venue; 
 	
@@ -399,24 +394,19 @@ function prepare_reservation_chart_week($week)
 	
 	//Get reservations for that week
 	global $playgrounds;
-	$playground = $playgrounds->findOne(array(
-	'Playground_reservations.Reservation_venue_id' =>  $_SESSION['venue']['Venue_id']
-		) ,
-	array(
-	'Playground_reservations' => true,
-		)	
-	);
+	global $reservations;
 	
-	$_SESSION['venue']['Venue_reservations'] = $playground['Playground_reservations'];
-									
-	//Fill the chart with the reservations : O(reservations_per_week) = O(time_slots*7) at max = O(time_slots)
-	foreach($_SESSION['venue']['Venue_reservations'] as $reservation)
+	$cursor = $reservations->find(array(
+					'Reservation_venue_id' => $_SESSION['venue']['Venue_id'] ,
+					'Reservation_week' => $week
+				));
+	
+	//for each $cursor fill the $chart matrix	: O(time_slots * 7) = O(time_slots)
+	foreach($cursor as $reservation)
 	{
-		if($reservation['Reservation_venue_id'] == $_SESSION['venue']['Venue_id'] && $reservation['Reservation_week'] == $week)
-		{
-			$chart[$reservation['Reservation_time']][$reservation['Reservation_day']] = "Booked" ;
-		}
+		$chart[$reservation['Reservation_time']][$reservation['Reservation_day']] = "Booked" ;
 	}
+	
 	
 	return $chart;
 	
@@ -439,14 +429,14 @@ function read_reservation_from_database($venue_id, $week, $day, $time)
 	//If booking allowed for that day , search if already booked
 	
 	
-	global $playgrounds;
+	global $reservations;
 	
-	$count = $playgrounds->count(
+	$count = $reservations->count(
 				array(
-					'Playground_reservations.Reservation_venue_id' => $venue_id ,
-					'Playground_reservations.Reservation_week' => $week  ,
-					'Playground_reservations.Reservation_day' => $day ,
-					'Playground_reservations.Reservation_time' => $time
+					'Reservation_venue_id' => $venue_id ,
+					'Reservation_week' => $week  ,
+					'Reservation_day' => $day,
+					'Reservation_time' => $time
 					) 
 				);
 	
