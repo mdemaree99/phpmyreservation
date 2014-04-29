@@ -38,19 +38,26 @@ function showsearchpage()
 
 function showsearch(game_type,location)
 {
-	showsearchpage();
-	searchvenue(game_type,location);
+	page_load();
+	div_hide('#content_div');
+	$.get('searchpage.php', function(data) 
+	{ 
+		searchvenue(game_type,location);
+		$('#content_div').html(data); 
+		div_fadein('#content_div'); 
+		page_loaded(); 
+	}); 
 }
 
 function searchvenue(game_type , location)
 {
-	page_load();
+	$('#search_results').html("Searching...");
 	
 	$.get('searchpage.php?search' , {sports_type : game_type, location : location} , 
 	function(data) {
-			$('#search_results').html(data);
 			$('#game_type_input').val(game_type);
 			$('#location_input').val(location);
+			$('#search_results').html(data);			
 		});
 }
 
