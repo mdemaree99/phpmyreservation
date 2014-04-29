@@ -398,12 +398,21 @@ function prepare_reservation_chart_week($week)
 	}
 	
 	//Get reservations for that week
+	global $playgrounds;
+	$playground = $playgrounds->findOne(array(
+	'Playground_reservations.Reservation_venue_id' =>  $_SESSION['venue']['Venue_id']
+		) ,
+	array(
+	'Playground_reservations' => true,
+		)	
+	);
 	
-	
+	$_SESSION['venue']['Venue_reservations'] = $playground['Playground_reservations'];
+									
 	//Fill the chart with the reservations : O(reservations_per_week) = O(time_slots*7) at max = O(time_slots)
 	foreach($_SESSION['venue']['Venue_reservations'] as $reservation)
 	{
-		if($reservation['Reservation_week'] == $week)
+		if($reservation['Reservation_venue_id'] == $_SESSION['venue']['Venue_id'] && $reservation['Reservation_week'] == $week)
 		{
 			$chart[$reservation['Reservation_time']][$reservation['Reservation_day']] = "Booked" ;
 		}
