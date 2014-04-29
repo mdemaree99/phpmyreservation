@@ -503,9 +503,6 @@ function make_temporary_reservation($venue_id, $week, $day, $time ,$user_name, $
 		return('This time slot is not available at the venue');
 	}
 	
-	//Get price from the venue details
-	$price = get_venue_attribute('rate',$venue_id);
-	
 	if($week < global_week_number || $week == global_week_number && $day < global_day_number )
 	{
 		return('You can\'t reserve back in time');
@@ -527,7 +524,7 @@ function make_temporary_reservation($venue_id, $week, $day, $time ,$user_name, $
 			"Reservation_user_phone" => $user_phone,
 			"Reservation_user_name" => $user_name,
 			"Reservation_user_id" => $user_id,
-			"Reservation_is_temporary" => 'true'
+			"Reservation_is_temporary" => new MongoDate()
 		);
 
 		try
@@ -535,9 +532,8 @@ function make_temporary_reservation($venue_id, $week, $day, $time ,$user_name, $
 			$reservations->insert($reservation);
 			return "Booked successfully";
 		}
-		catch(MongoDuplicateKeyException $e)
+		catch(MongoException $e)
 		{
-			echo $e->getMessage();
 			return('Someone else just reserved this slot');
 		}
 	}
@@ -555,7 +551,8 @@ function confirm_reservation($venue_id, $week, $day, $time)
 			);
 	
 	$reservations->update($query , array(
-					'$unset' => array('Reservation_is_temporary' => '')
+					'$unset' => array('Reservation_is_temporary' => ''),
+					'$set' => array('Reservation_made_at' => new MongoDate())
 					));
 }
 

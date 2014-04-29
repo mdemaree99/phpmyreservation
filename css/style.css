@@ -108,6 +108,7 @@ div#header_div
 	font-size: 12px;
 	overflow: hidden;
 	white-space: nowrap;
+	opacity:.9;
 }
 
 div#header_inner_div
