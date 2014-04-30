@@ -7,7 +7,7 @@ define('global_mysql_server', 'localhost');
 define('global_mysql_user', 'demo');
 define('global_mysql_password', '');
 define('global_mysql_database', 'test');
-define('global_mongodb_database', 'mongodb://admin:admin@ds043987.mongolab.com:43987/playgroundreservation');
+define('global_mongodb_database', 'mongodb://admin:admin@ds047037.mongolab.com:47037/heroku_app24497420');
 
 // Salt for password encryption. Changing it is recommended. Use 9 random characters
 // This MUST be 9 characters, and must NOT be changed after users have been created
